@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "y+md7ehKmaFGuxFUXCisE7Bi1fvis2eSbqrY41qeuDPK5dDLYJDVvrOJ/trygf5u5+769OtV7wnhrd7UcBqYiQ==",
+  "success": true,
+  "projectFilePath": "D:\\WPF_project\\VisualChatBot\\VisualChatBot.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Administrator\\.nuget\\packages\\communitytoolkit.mvvm\\8.1.0-preview3\\communitytoolkit.mvvm.8.1.0-preview3.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}
