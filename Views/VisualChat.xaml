@@ -80,7 +80,7 @@
                         StaysOpen="False"
                         AllowsTransparency="True"
                         IsOpen="{Binding ElementName=MenuToggleBtn, Path=IsChecked}"
-                        PlacementTarget="{Binding ElementName=MenuBtn}"
+                        PlacementTarget="{Binding ElementName=MenuToggleBtn}"
                         Placement="Bottom">
                         <Border
                             Margin="10"
@@ -145,7 +145,8 @@
                                 x:Name="OptionalModelsComboBox"
                                 BorderThickness="0"
                                 VerticalAlignment="Center"
-                                SelectedValue="{Binding Modelstype}"
+                                SelectionChanged="OptionalModelsComboBox_SelectionChanged"
+                                SelectedValue="{Binding Modelstype, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Margin="0,0,0,0"
                                 Height="20"
                                 Width="140"/>
@@ -157,7 +158,8 @@
                             <ComboBox
                                 x:Name="ObjectDegreeCombobox"
                                 BorderThickness="0"
-                                SelectedValue="{Binding ObjectDegree}"
+                                SelectionChanged="ObjectDegreeCombobox_SelectionChanged"
+                                SelectedValue="{Binding ObjectDegree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 VerticalAlignment="Center"
                                 Margin="0,0,0,0"
                                 Height="20"
@@ -168,7 +170,9 @@
                                 VerticalAlignment="Center"
                                 Margin="5,0,5,0"/>
                             <TextBox
+                                x:Name="MaxTokensTextbox"
                                 Text="{Binding MaxToken}"
+                                TextChanged="MaxTokensTextbox_TextChanged"
                                 BorderThickness="1"
                                 VerticalAlignment="Center"
                                 Margin="0,0,0,0"

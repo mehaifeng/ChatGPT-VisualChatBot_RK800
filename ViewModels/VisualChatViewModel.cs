@@ -16,13 +16,32 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
+using VisualChatBot.Models;
+using System.Reflection.Metadata;
+using System.IO;
+using System.Windows.Input;
+using System.ComponentModel;
+using Newtonsoft.Json.Linq;
 
 namespace VisualChatBot.ViewModels
 {
-    public partial class VisualChatViewModel: ObservableObject
+    public partial class VisualChatViewModel: ObservableObject , INotifyPropertyChanged
     {
+        ReadWriteJson readWriteJson = new();
         public VisualChatViewModel()
         {
+            if (File.Exists(userConfigPath))
+            {
+                Modelstype = readWriteJson.ReadJson(userConfigPath, "model");
+                ObjectDegree = Convert.ToDouble(readWriteJson.ReadJson(userConfigPath, "objectDegree"));
+                MaxToken = Convert.ToInt32(readWriteJson.ReadJson(userConfigPath, "maxTokens"));
+                ApiKey = readWriteJson.ReadJson(userConfigPath, "APIKey");
+            }
+            else if(string.IsNullOrEmpty(readWriteJson.ReadJson(userConfigPath, "APIKey")))
+            {
+                ShowOutput = $"初次使用需要填写API_key，你可以在https://openai.com/api/获取API key\n请在下方输入你的API_key，并点击发送";
+                HttpGetModel.IsValidApiKey = false;
+            }
             for(int i = 0; i < 80; i++)
             {
                 placeholder += "-";
@@ -76,29 +95,29 @@ namespace VisualChatBot.ViewModels
         [ObservableProperty]
         private string menuToggleBtnContent = "\xe863";
 
-
         /// <summary>
         /// Api-Key
         /// </summary>
         [ObservableProperty]
-        private string apiKey = "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";
+        private string? apiKey;
 
-        private string prompt;
-        private string model;
-        private double temperature;
-        private int max_tokens;
+        private string? prompt;
+        private string? model;
+        private double? temperature;
+        private int? max_tokens;
         private double top_p = 1;
         private double frequency_penalty = 1;
         private double presence_penalty = 0.4;
         private string requestUrl = "https://api.openai.com/v1/completions";
-
-        private string lastChatRecoder;
+        private string userConfigPath = $"{System.Environment.CurrentDirectory}//UserConfig.json";
+        private string? lastChatRecoder;
         private string placeholder = "-";
 
         [RelayCommand]
         private async void Send(TextBox o)
         {
-            if (!string.IsNullOrWhiteSpace(MyInput))
+            Tools.WebRequest webRequest = new Tools.WebRequest();
+            if (!string.IsNullOrWhiteSpace(MyInput)&&HttpGetModel.IsValidApiKey==true)
             {
                 var input = new
                 {
@@ -112,13 +131,13 @@ namespace VisualChatBot.ViewModels
                 };
                 var json = JsonConvert.SerializeObject(input);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                Tools.WebRequest webRequest = new Tools.WebRequest();
+
                 if (string.IsNullOrWhiteSpace(lastChatRecoder))
                 {
                     ShowOutput = $"你：\n\n{MyInput}";
                     o.ScrollToEnd();
                     MyInput = "";
-                    ShowOutput = $"{ShowOutput}\n\nRK800：{await webRequest.WebRequestMethon(apiKey, requestUrl, content)}\n\n{placeholder}";
+                    ShowOutput = $"{ShowOutput}\n\nRK800：{await webRequest.WebRequestMethon(ApiKey, requestUrl, content)}\n\n{placeholder}";
                     lastChatRecoder = ShowOutput;
                     o.ScrollToEnd();
                 }
@@ -127,12 +146,63 @@ namespace VisualChatBot.ViewModels
                     ShowOutput = $"{ShowOutput}\n\n你：\n\n{MyInput}";
                     o.ScrollToEnd();
                     MyInput = "";
-                    ShowOutput = $"{ShowOutput}\n\nRK800：{await webRequest.WebRequestMethon(apiKey, requestUrl, content)}\n\n{placeholder}";
+                    ShowOutput = $"{ShowOutput}\n\nRK800：{await webRequest.WebRequestMethon(ApiKey, requestUrl, content)}\n\n{placeholder}";
                     lastChatRecoder += ShowOutput;
                     o.ScrollToEnd();
                 }
             }
+            else if(HttpGetModel.IsValidApiKey == false)
+            {
+                if (!string.IsNullOrWhiteSpace(MyInput))
+                {
+                    ApiKey= MyInput;
+                    if (ApiKey.Contains('-'))
+                    {
+                        ShowOutput = $"{ApiKey.Split('-')[0]}******\n\n请稍等...\n\n";
+                        MyInput = "";
+                        await webRequest.WebRequestMethon(ApiKey, requestUrl, null);
+                        if(HttpGetModel.IsValidApiKey == true)
+                        {
+                            ShowOutput = $"{ShowOutput}API Key可用！enjoy！";
+                            if (!File.Exists(userConfigPath))
+                            {
+                                InitialOpreate();
+                            }
+                            else
+                            {
+                                string json = readWriteJson.ReadJson(userConfigPath, null);
+                                readWriteJson.WriteJson(json, "APIKey", ApiKey);
+                            }
+                        }
+                        else
+                        {
+                            ShowOutput = $"{ShowOutput}API Key无效！";
+                        }
+                    }
+                    else
+                    {
+                        ShowOutput = $"API Key不正确";
+                        MyInput = "";
+                    }
+                }
+            }
         }
+        /// <summary>
+        /// 初始操作
+        /// </summary>
+        void InitialOpreate()
+        {
+            Dictionary<string, string> UserConfig = new()
+            {
+                { "model", Modelstype },
+                { "objectDegree", ObjectDegree.ToString() },
+                { "maxTokens", MaxToken.ToString() },
+                { "APIKey", ApiKey }
+            };
+            var jsonStr = JsonConvert.SerializeObject(UserConfig);
+            File.WriteAllText(userConfigPath, jsonStr);
+        }
+
         [RelayCommand]
         private void ClickAbout()
         {

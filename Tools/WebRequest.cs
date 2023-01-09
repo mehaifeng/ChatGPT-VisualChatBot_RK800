@@ -13,7 +13,7 @@ namespace VisualChatBot.Tools
 {
     public class WebRequest
     {
-        public async Task<string?> WebRequestMethon(string apikey,string requestUrl,StringContent input)
+        public async Task<string?> WebRequestMethon(string? apikey,string? requestUrl,StringContent? input)
         {
             try
             {
@@ -27,10 +27,19 @@ namespace VisualChatBot.Tools
                     responType = JsonConvert.DeserializeObject<HttpGetModel>(responseContent);
                     if (response.IsSuccessStatusCode == false)
                     {
+                        if(responType.error.code== "invalid_api_key")
+                        {
+                            HttpGetModel.IsValidApiKey = false;
+                            return $"\n\nApi_Key无效，请在下方输入正确的Api_Key，并点击发送";
+                        }
+                        else if(responType.error.message == "you must provide a model parameter")
+                        {
+                            HttpGetModel.IsValidApiKey = true;
+                        }
                         string errorInfo = $"\n错误类型：{responType.error.type}\n错误内容：{responType.error.message}\n\n";
                         return errorInfo;
                     }
-
+                    HttpGetModel.IsValidApiKey = true;
                     // 返回接收到的内容
                     return await Task.FromResult(result: responType?.Choicese?.First().Text);
                 }

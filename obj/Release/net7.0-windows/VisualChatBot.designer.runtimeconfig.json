@@ -12,9 +12,9 @@
       }
     ],
     "additionalProbingPaths": [
-      "C:\\Users\\hf_A\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\hf_A\\.nuget\\packages",
-      "D:\\ApplicationTemp\\VisualStudioRela\\Component&Tool&SDK\\NuGetPackages"
+      "C:\\Users\\Administrator\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\Administrator\\.nuget\\packages",
+      "D:\\Applications\\VisualStudio\\Shared\\NuGetPackages"
     ],
     "configProperties": {
       "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,

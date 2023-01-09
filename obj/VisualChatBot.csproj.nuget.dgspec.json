@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\WPF_project\\VisualChatBot\\VisualChatBot.csproj": {}
+    "D:\\WPF_project\\VisualChatBot\\ChatGPT-VisualChatBot_RK800\\VisualChatBot.csproj": {}
   },
   "projects": {
-    "D:\\WPF_project\\VisualChatBot\\VisualChatBot.csproj": {
+    "D:\\WPF_project\\VisualChatBot\\ChatGPT-VisualChatBot_RK800\\VisualChatBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\WPF_project\\VisualChatBot\\VisualChatBot.csproj",
+        "projectUniqueName": "D:\\WPF_project\\VisualChatBot\\ChatGPT-VisualChatBot_RK800\\VisualChatBot.csproj",
         "projectName": "VisualChatBot",
-        "projectPath": "D:\\WPF_project\\VisualChatBot\\VisualChatBot.csproj",
+        "projectPath": "D:\\WPF_project\\VisualChatBot\\ChatGPT-VisualChatBot_RK800\\VisualChatBot.csproj",
         "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "D:\\WPF_project\\VisualChatBot\\obj\\",
+        "outputPath": "D:\\WPF_project\\VisualChatBot\\ChatGPT-VisualChatBot_RK800\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\Applications\\VisualStudio\\Shared\\NuGetPackages"

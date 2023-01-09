@@ -30,6 +30,11 @@ namespace VisualChatBot.Models
         [JsonProperty("error")]
         public ErrorInfo? error { get; set; }
 
+        /// <summary>
+        /// Api_Key是否有效
+        /// </summary>
+        public static bool IsValidApiKey { get; set; } = true;
+
         public class Choices
         {
             [JsonProperty("text")]
