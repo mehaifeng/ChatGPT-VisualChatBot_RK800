@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = VisualChatBot
-build_property.ProjectDir = D:\WPF_project\VisualChatBot\ChatGPT-VisualChatBot_RK800\
+build_property.ProjectDir = D:\WPF_project\ChatGPT-VisualChatBot_RK800\

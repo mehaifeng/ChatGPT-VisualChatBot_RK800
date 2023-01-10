@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\WPF_project\VisualChatBot\ChatGPT-VisualChatBot_RK800\obj\Release\net7.0-windows\
+D:\WPF_project\ChatGPT-VisualChatBot_RK800\obj\Release\net7.0-windows\
 VisualChatBot
 none
 false
 TRACE;RELEASE;NET;NET7_0;NETCOREAPP
-D:\WPF_project\VisualChatBot\ChatGPT-VisualChatBot_RK800\App.xaml
+D:\WPF_project\ChatGPT-VisualChatBot_RK800\App.xaml
 21694045732
 
 9192327573
 200-598845680
 Assets\Styles\DefaultStyles.xaml;Views\VisualChat.xaml;
 
-True
+False
 

@@ -171,7 +171,7 @@
                                 Margin="5,0,5,0"/>
                             <TextBox
                                 x:Name="MaxTokensTextbox"
-                                Text="{Binding MaxToken}"
+                                Text="{Binding MaxToken, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextChanged="MaxTokensTextbox_TextChanged"
                                 BorderThickness="1"
                                 VerticalAlignment="Center"

@@ -37,7 +37,7 @@ namespace VisualChatBot.ViewModels
                 MaxToken = Convert.ToInt32(readWriteJson.ReadJson(userConfigPath, "maxTokens"));
                 ApiKey = readWriteJson.ReadJson(userConfigPath, "APIKey");
             }
-            else if(string.IsNullOrEmpty(readWriteJson.ReadJson(userConfigPath, "APIKey")))
+            if(string.IsNullOrEmpty(readWriteJson.ReadJson(userConfigPath, "APIKey")))
             {
                 ShowOutput = $"初次使用需要填写API_key，你可以在https://openai.com/api/获取API key\n请在下方输入你的API_key，并点击发送";
                 HttpGetModel.IsValidApiKey = false;

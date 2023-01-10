@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "1OqWDV0G3/x2jjyl7uPUNJ6aQBPK7Tfj6PXilfrZ81uUq849+gEY0SU+QMXW/qTvOoFnXA8l4aOP1aKkKfeyVg==",
+  "dgSpecHash": "IioQip2Ch7L2fJi8egRnn6b9ECLvq7FwzOwyjkwFL2sz7Me/uX1SocIfvNxChpPa69leQ/gJG+H7Z2eNEx42qQ==",
   "success": true,
-  "projectFilePath": "D:\\WPF_project\\VisualChatBot\\ChatGPT-VisualChatBot_RK800\\VisualChatBot.csproj",
+  "projectFilePath": "D:\\WPF_project\\ChatGPT-VisualChatBot_RK800\\VisualChatBot.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\communitytoolkit.mvvm\\8.1.0-preview3\\communitytoolkit.mvvm.8.1.0-preview3.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512"
