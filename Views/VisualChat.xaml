@@ -95,13 +95,13 @@
                                 Margin="5"
                                 Orientation="Vertical">
                                 <Button 
-                                    Content="打开存档" 
+                                    Content="历史记录" 
                                     Template="{StaticResource MenuBtnTemplate}"
                                     FontSize="12"
                                     Margin="0,0,0,8"
                                     />
                                 <Button 
-                                    Content="OpenAI门户"  
+                                    Content="OpenAI"  
                                     FontSize="12"
                                     Template="{StaticResource MenuBtnTemplate}"
                                     Margin="0,0,0,8"
@@ -234,19 +234,34 @@
                 <Border
                     CornerRadius="0,0,5,5"
                     Background="White">
-                    <Button
-                        x:Name="confirmBtn"
-                        Width="80"
-                        Height="30"
-                        Margin="0,0,5,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Background="LightGray"
-                        Content="发送"
-                        Command="{Binding SendCommand}"
-                        CommandParameter="{Binding ElementName=OutputBox}"
-                        Template="{StaticResource ConfirmButtonTemplate}">
-                    </Button>
+                    <Grid>
+                        <Button
+                            x:Name="clearBtn"
+                            Width="80"
+                            Height="30"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="LightGray"
+                            Content="清空"
+                            Command="{Binding ClearAllCommand}"
+                            CommandParameter="{Binding ElementName=OutputBox}"
+                            Template="{StaticResource ConfirmButtonTemplate}">
+                        </Button>
+                        <Button
+                            x:Name="confirmBtn"
+                            Width="80"
+                            Height="30"
+                            Margin="0,0,5,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="LightGray"
+                            Content="发送"
+                            Command="{Binding SendCommand}"
+                            CommandParameter="{Binding ElementName=OutputBox}"
+                            Template="{StaticResource ConfirmButtonTemplate}">
+                        </Button>
+                    </Grid>
                 </Border>
             </Grid>
         </Grid>

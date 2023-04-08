@@ -40,7 +40,7 @@ namespace VisualChatBot.Tools
                         {
                             using (EventLog log = new EventLog())
                             {
-                                log.WriteEntry($"NullReferenceException:空指针引用\n{ex.Message}\n{ex.StackTrace}");
+                                log.WriteEntry($"NullReferenceException:\n{ex.Message}\n{ex.StackTrace}");
                             }
                             return null;
                         }

@@ -36,9 +36,8 @@ namespace VisualChatBot
             this.DataContext = _visualChatViewModel;
             OptionalModelsComboBox.ItemsSource = new[]
             {
-                "text-davinci-001",
-                "text-davinci-002",
-                "text-davinci-003"
+                "gpt-3.5-turbo",
+                "gpt-3.5-turbo-0301",
             };
             ObjectDegreeCombobox.ItemsSource = new[]
             {

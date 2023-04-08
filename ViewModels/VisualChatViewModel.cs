@@ -46,12 +46,13 @@ namespace VisualChatBot.ViewModels
             {
                 placeholder += "-";
             }
+            LastMessage.AllMessage.Add(new Message { content = "你是一位风情万种的猫娘", role = "system" });
         }
         /// <summary>
         /// 模型
         /// </summary>
         [ObservableProperty]
-        private string modelstype = "text-davinci-003";
+        private string modelstype = "gpt-3.5-turbo";
 
         /// <summary>
         /// 主客观值
@@ -108,20 +109,25 @@ namespace VisualChatBot.ViewModels
         private double top_p = 1;
         private double frequency_penalty = 1;
         private double presence_penalty = 0.4;
-        private string requestUrl = "https://api.openai.com/v1/completions";
+        private string requestUrl = "https://api.openai.com/v1/chat/completions";
         private string userConfigPath = $"{System.Environment.CurrentDirectory}//UserConfig.json";
         private string? lastChatRecoder;
         private string placeholder = "-";
 
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="o"></param>
         [RelayCommand]
         private async void Send(TextBox o)
         {
             Tools.WebRequest webRequest = new Tools.WebRequest();
             if (!string.IsNullOrWhiteSpace(MyInput)&&HttpGetModel.IsValidApiKey==true)
             {
+                LastMessage.AllMessage.Add(new Message { content=MyInput,role = "user"});
                 var input = new
                 {
-                    prompt = MyInput,
+                    messages = LastMessage.AllMessage,
                     model = Modelstype,
                     max_tokens = MaxToken,
                     top_p,
@@ -185,6 +191,19 @@ namespace VisualChatBot.ViewModels
                         MyInput = "";
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// 清空
+        /// </summary>
+        /// <param name="o"></param>
+        [RelayCommand]
+        private void ClearAll(TextBox o)
+        {
+            if (o != null)
+            {
+                o.Clear();
             }
         }
         /// <summary>

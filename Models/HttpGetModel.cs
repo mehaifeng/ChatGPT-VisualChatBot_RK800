@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using VisualChatBot.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,14 +38,12 @@ namespace VisualChatBot.Models
 
         public class Choices
         {
-            [JsonProperty("text")]
-            public string? Text { get; set; }
+            [JsonProperty("message")]
+            public Message MessageDetail { get; set; }
+            [JsonProperty("finish_reason")]
+            public string Finish_reason { get; set; }
             [JsonProperty("index")]
-            public string? Index { get; set; }
-            [JsonProperty("logprobs")]
-            public string? Logprobs { get; set; }
-            [JsonProperty("finish_reson")]
-            public string? Finish_reson { get; set; }
+            public int index { get; set; }
         }
         public class Usage
         {

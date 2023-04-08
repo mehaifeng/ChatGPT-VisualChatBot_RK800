@@ -21,7 +21,6 @@ namespace VisualChatBot.Tools
                 {
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apikey}");
                     var response = await client.PostAsync(requestUrl, input);
-                    response.Content.Headers.ContentLength = 1024;
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var responType = new HttpGetModel();
                     responType = JsonConvert.DeserializeObject<HttpGetModel>(responseContent);
@@ -40,8 +39,9 @@ namespace VisualChatBot.Tools
                         return errorInfo;
                     }
                     HttpGetModel.IsValidApiKey = true;
+                    LastMessage.AllMessage.Add(responType.Choicese.First().MessageDetail);
                     // 返回接收到的内容
-                    return await Task.FromResult(result: responType?.Choicese?.First().Text);
+                    return await Task.FromResult(result: responType?.Choicese?.First().MessageDetail.content);
                 }
             }
             catch(Exception ex)
