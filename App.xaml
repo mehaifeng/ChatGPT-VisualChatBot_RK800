@@ -4,6 +4,13 @@
              xmlns:local="clr-namespace:VisualChatBot"
              StartupUri="Views/VisualChat.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <!--默认颜色-->
+            <SolidColorBrush x:Key="BackgroundColor" Color="Black"/>
+            <SolidColorBrush x:Key="ForegroundColor" Color="White"/>
+            <!--黑暗模式颜色-->
+            <SolidColorBrush x:Key="DarkModeBackgroundColor" Color="Black"/>
+            <SolidColorBrush x:Key="DarkModeForegroundColor" Color="White"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

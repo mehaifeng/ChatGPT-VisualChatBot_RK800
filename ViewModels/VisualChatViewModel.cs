@@ -204,6 +204,8 @@ namespace VisualChatBot.ViewModels
             if (o != null)
             {
                 o.Clear();
+                LastMessage.AllMessage.Clear();
+                ShowOutput = string.Empty;
             }
         }
         /// <summary>
@@ -250,7 +252,7 @@ namespace VisualChatBot.ViewModels
             if ( ConfigGridHeight < 60)
             {
                 SettingBtnContent = "\xe797";
-                Timer timer = new(1);
+                Timer timer = new(0.5);
                 timer.Elapsed += (sender,e) =>
                 {
                     ConfigGridHeight++;
@@ -265,7 +267,7 @@ namespace VisualChatBot.ViewModels
             if ( ConfigGridHeight >= 60)
             {
                 SettingBtnContent = "\xe799";
-                Timer timer = new Timer(1);
+                Timer timer = new Timer(0.5);
                 timer.Elapsed += (sender, e) =>
                 {
                     ConfigGridHeight--;

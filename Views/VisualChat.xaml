@@ -11,7 +11,7 @@
         AllowsTransparency="True"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
-        Height="800" Width="450">
+        Height="800" Width="650">
     <Window.Resources>
         <ResourceDictionary Source="../Assets/Styles/DefaultStyles.xaml"/>
     </Window.Resources>
@@ -29,6 +29,7 @@
                 <RowDefinition Height="110"/>
             </Grid.RowDefinitions>
             <Border
+                Name="AppTitle"
                 MouseLeftButtonDown="MoveWindow_MouseLeftButtonDown"
                 Grid.Row="0"
                 CornerRadius="5,5,0,0"
@@ -36,6 +37,13 @@
                 <StackPanel
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
+                    <Button 
+                        Name="ModeSwitch"
+                        Click="ModeSwitch_Click"
+                        Content="&#xe687;"
+                        FontSize="20"
+                        Margin="0,0,10,0"
+                        Template="{StaticResource WindowControlButtomTemplate}"/>
                     <Button 
                         Click="MiniOrReSize_Click"
                         Content="&#xea7f;"
@@ -51,6 +59,7 @@
                 </StackPanel>
             </Border>
             <StackPanel
+                Name="AppBody"
                 MouseLeftButtonDown="StackPanel_MouseLeftButtonDown"
                 Background="White"
                 Grid.Row="1"
@@ -131,7 +140,7 @@
                     BorderThickness="1"
                     Margin="5,0,5,5"
                     Height="{Binding ConfigGridHeight}"
-                    Width="420">
+                    Width="620">
                     <Grid
                         x:Name="ConfigGrid">
                         <StackPanel
@@ -151,7 +160,7 @@
                                 Height="20"
                                 Width="140"/>
                             <TextBlock 
-                                Text="主客观"
+                                Text="发散值"
                                 Foreground="Gray"
                                 VerticalAlignment="Center"
                                 Margin="5,0,5,0"/>
@@ -164,6 +173,19 @@
                                 Margin="0,0,0,0"
                                 Height="20"
                                 Width="45"/>
+                            <TextBlock 
+                                Text="系统消息"
+                                Foreground="Gray"
+                                VerticalAlignment="Center"
+                                Margin="5,0,5,0"/>
+                            <TextBox
+                                Text="{Binding MaxToken, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextChanged="MaxTokensTextbox_TextChanged"
+                                BorderThickness="1"
+                                VerticalAlignment="Center"
+                                Margin="0,0,0,0"
+                                Height="20"
+                                Width="140"/>
                             <TextBlock 
                                 Text="MaxTokens"
                                 Foreground="Gray"
@@ -233,7 +255,7 @@
                 Background="{x:Null}">
                 <Border
                     CornerRadius="0,0,5,5"
-                    Background="White">
+                    Background="Black">
                     <Grid>
                         <Button
                             x:Name="clearBtn"
@@ -242,11 +264,10 @@
                             Margin="5,0,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Background="LightGray"
-                            Content="清空"
+                            Content="&#xe686;"
                             Command="{Binding ClearAllCommand}"
                             CommandParameter="{Binding ElementName=OutputBox}"
-                            Template="{StaticResource ConfirmButtonTemplate}">
+                            Template="{StaticResource ButtonTemplate}">
                         </Button>
                         <Button
                             x:Name="confirmBtn"
@@ -255,11 +276,10 @@
                             Margin="0,0,5,0"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
-                            Background="LightGray"
-                            Content="发送"
+                            Content="&#xe912;"
                             Command="{Binding SendCommand}"
                             CommandParameter="{Binding ElementName=OutputBox}"
-                            Template="{StaticResource ConfirmButtonTemplate}">
+                            Template="{StaticResource ButtonTemplate}">
                         </Button>
                     </Grid>
                 </Border>

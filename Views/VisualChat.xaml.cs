@@ -52,6 +52,7 @@ namespace VisualChatBot
                 0.8,
                 0.9
             };
+            ModeSwitch.Content = "\xe687";
         }
 
         private void MiniOrReSize_Click(object sender, RoutedEventArgs e)
@@ -180,6 +181,19 @@ namespace VisualChatBot
                 };
                 var jsonStr = JsonConvert.SerializeObject(UserConfig);
                 File.WriteAllText(userConfigPath, jsonStr);
+            }
+        }
+
+        private void ModeSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            ModeSwitch.Content = ModeSwitch.Content.ToString() == "\xe665" ? "\xe687" : "\xe665";
+            if( string.Compare(ModeSwitch.Content.ToString(),"\xe665")==0)
+            {
+                
+            }
+            else
+            {
+                
             }
         }
     }
