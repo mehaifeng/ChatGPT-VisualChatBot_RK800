@@ -186,14 +186,49 @@ namespace VisualChatBot
 
         private void ModeSwitch_Click(object sender, RoutedEventArgs e)
         {
-            ModeSwitch.Content = ModeSwitch.Content.ToString() == "\xe665" ? "\xe687" : "\xe665";
-            if( string.Compare(ModeSwitch.Content.ToString(),"\xe665")==0)
+
+            //如果是明亮模式
+            if (ModeSwitch.Foreground == Brushes.White)
             {
-                
+                ModeSwitch.Foreground = Brushes.Black;
+                //AppTitle
+                AppTitle.Background = Application.Current.Resources["BackgroundColor"] as SolidColorBrush;
+                miniBtn.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
+                closeBtn.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
+                MenuToggleBtn.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
+                OpenSettingBtn.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
+                //AppBody
+                AppBody.Background = Application.Current.Resources["BackgroundColor"] as SolidColorBrush;
+                OutputBox.Background = Application.Current.Resources["TextBoxBackgroundColor"] as SolidColorBrush;
+                OutputBox.Foreground = Application.Current.Resources["TextBoxForegroundColor"] as SolidColorBrush;
+                loadingSignal.Foreground = Application.Current.Resources["LabelForegroundColor"] as SolidColorBrush;
+                //AppButtom
+                AppButtom.Background = Application.Current.Resources["BackgroundColor"] as SolidColorBrush;
+                InputBox.Background = Application.Current.Resources["TextBoxBackgroundColor"] as SolidColorBrush;
+                InputBox.Foreground = Application.Current.Resources["TextBoxForegroundColor"] as SolidColorBrush;
+                SendBtn.Background = Application.Current.Resources["ButtonBackgroundColor"] as SolidColorBrush;
+
             }
-            else
+            //如果是黑暗模式
+            else if(ModeSwitch.Foreground == Brushes.Black)
             {
-                
+                ModeSwitch.Foreground = Brushes.White;
+                //AppTitle
+                AppTitle.Background = Application.Current.Resources["DarkBackgroundColor"] as SolidColorBrush;
+                miniBtn.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
+                closeBtn.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
+                MenuToggleBtn.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
+                OpenSettingBtn.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
+                //AppBody
+                AppBody.Background = Application.Current.Resources["DarkBackgroundColor"] as SolidColorBrush;
+                OutputBox.Background = Application.Current.Resources["DarkTextBoxBackgroundColor"] as SolidColorBrush;
+                OutputBox.Foreground = Application.Current.Resources["DarkTextBoxForegroundColor"] as SolidColorBrush;
+                loadingSignal.Foreground = Application.Current.Resources["DarkLabelForegroundColor"] as SolidColorBrush;
+                //AppButtom
+                AppButtom.Background = Application.Current.Resources["DarkBackgroundColor"] as SolidColorBrush;
+                InputBox.Background = Application.Current.Resources["DarkTextBoxBackgroundColor"] as SolidColorBrush;
+                InputBox.Foreground = Application.Current.Resources["DarkTextBoxForegroundColor"] as SolidColorBrush;
+                SendBtn.Background = Application.Current.Resources["DarkButtonBackgroundColor"] as SolidColorBrush;
             }
         }
     }

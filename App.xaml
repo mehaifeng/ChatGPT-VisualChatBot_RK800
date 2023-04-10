@@ -6,11 +6,19 @@
     <Application.Resources>
         <ResourceDictionary>
             <!--默认颜色-->
-            <SolidColorBrush x:Key="BackgroundColor" Color="Black"/>
-            <SolidColorBrush x:Key="ForegroundColor" Color="White"/>
+            <SolidColorBrush x:Key="BackgroundColor" Color="White"/>
+            <SolidColorBrush x:Key="ForegroundColor" Color="Black"/>
+            <SolidColorBrush x:Key="TextBoxBackgroundColor" Color="#F5F5F5"/>
+            <SolidColorBrush x:Key="TextBoxForegroundColor" Color="Black"/>
+            <SolidColorBrush x:Key="LabelForegroundColor" Color="LightGray"/>
+            <SolidColorBrush x:Key="ButtonBackgroundColor" Color="LightGray"/>
             <!--黑暗模式颜色-->
-            <SolidColorBrush x:Key="DarkModeBackgroundColor" Color="Black"/>
-            <SolidColorBrush x:Key="DarkModeForegroundColor" Color="White"/>
+            <SolidColorBrush x:Key="DarkBackgroundColor" Color="Black"/>
+            <SolidColorBrush x:Key="DarkForegroundColor" Color="White"/>
+            <SolidColorBrush x:Key="DarkTextBoxBackgroundColor" Color="#696969"/>
+            <SolidColorBrush x:Key="DarkTextBoxForegroundColor" Color="White"/>
+            <SolidColorBrush x:Key="DarkLabelForegroundColor" Color="#483d8b"/>
+            <SolidColorBrush x:Key="DarkButtonBackgroundColor" Color="LightGray"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

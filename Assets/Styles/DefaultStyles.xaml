@@ -27,6 +27,7 @@
             Cursor="Hand"
             CornerRadius="5"
             BorderBrush="LightGray"
+            Background="White"
             BorderThickness="1">
             <TextBlock 
                 x:Name="ButtonName"

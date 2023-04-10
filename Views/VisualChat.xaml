@@ -41,16 +41,19 @@
                         Name="ModeSwitch"
                         Click="ModeSwitch_Click"
                         Content="&#xe687;"
+                        Foreground="Black"
                         FontSize="20"
                         Margin="0,0,10,0"
                         Template="{StaticResource WindowControlButtomTemplate}"/>
                     <Button 
+                        Name="miniBtn"
                         Click="MiniOrReSize_Click"
                         Content="&#xea7f;"
                         FontSize="20"
                         Margin="0,0,5,0"
                         Template="{StaticResource WindowControlButtomTemplate}"/>
                     <Button 
+                        Name="closeBtn"
                         Click="Close_Click"
                         Content="&#xe64b;"
                         FontSize="30"
@@ -66,7 +69,7 @@
                 Orientation="Vertical">
                 <Grid>
                     <ToggleButton
-                        x:Name="MenuToggleBtn"
+                        Name="MenuToggleBtn"
                         Cursor="Hand"
                         FontSize="28"
                         Foreground="Black"
@@ -126,7 +129,7 @@
                     </Popup>
                     <Button
                         Cursor="Hand"
-                        x:Name="OpenSettingBtn"
+                        Name="OpenSettingBtn"
                         Content="{Binding SettingBtnContent}"
                         HorizontalAlignment="Center"
                         FontSize="28"
@@ -146,12 +149,13 @@
                         <StackPanel
                             Orientation="Horizontal">
                             <TextBlock 
+                                Name="models_label"
                                 Text="模型"
                                 Foreground="Gray"
                                 VerticalAlignment="Center"
                                 Margin="10,0,5,0"/>
                             <ComboBox
-                                x:Name="OptionalModelsComboBox"
+                                Name="OptionalModelsComboBox"
                                 BorderThickness="0"
                                 VerticalAlignment="Center"
                                 SelectionChanged="OptionalModelsComboBox_SelectionChanged"
@@ -160,6 +164,7 @@
                                 Height="20"
                                 Width="140"/>
                             <TextBlock 
+                                Name="Object_label"
                                 Text="发散值"
                                 Foreground="Gray"
                                 VerticalAlignment="Center"
@@ -174,6 +179,7 @@
                                 Height="20"
                                 Width="45"/>
                             <TextBlock 
+                                Name="system_label"
                                 Text="系统消息"
                                 Foreground="Gray"
                                 VerticalAlignment="Center"
@@ -187,6 +193,7 @@
                                 Height="20"
                                 Width="140"/>
                             <TextBlock 
+                                Name="tokens_label"
                                 Text="MaxTokens"
                                 Foreground="Gray"
                                 VerticalAlignment="Center"
@@ -204,21 +211,21 @@
                     </Grid>
                 </Border>
                 <TextBlock
+                    Name="title_label"
                     IsHitTestVisible="False"
                     Text="RK800"
                     Foreground="LightGray"
                     HorizontalAlignment="Center"
                     FontSize="28"/>
                 <Border 
-                    Background="#F5F5F5"
+                    Background="{Binding ElementName=OutputBox,Path=Background}"
                     BorderThickness="1"
-                    BorderBrush="LightGray"
                     CornerRadius="7"
                     Margin="5,15,5,0">
                     <TextBox
-                        x:Name="OutputBox"
+                        Name="OutputBox"
                         TextWrapping="WrapWithOverflow"
-                        Background="	#F5F5F5"
+                        Background="#F5F5F5"
                         AcceptsReturn="True"
                         IsReadOnly="True"
                         BorderThickness="0"
@@ -228,18 +235,18 @@
                         GotFocus="Input_GotFocus"/>
                 </Border>
                 <TextBlock 
-                    x:Name="loadingSignal"
+                    Name="loadingSignal"
                     Text="//////"
                     Foreground="LightGray"
                     HorizontalAlignment="Center"
                     Margin="0,2,0,5"/>
                 <Border 
-                    Background="#F5F5F5"
+                    Background="{Binding ElementName=InputBox,Path=Background}"
                     BorderThickness="1"
-                    BorderBrush="LightGray"
                     CornerRadius="7"
                     Margin="5,0,5,0">
                     <TextBox
+                        Name="InputBox"
                         Background="#F5F5F5"
                         TextWrapping="WrapWithOverflow"
                         AcceptsReturn="True"
@@ -254,11 +261,12 @@
             Grid.Row="2"
                 Background="{x:Null}">
                 <Border
+                    Name="AppButtom"
                     CornerRadius="0,0,5,5"
-                    Background="Black">
+                    Background="White">
                     <Grid>
                         <Button
-                            x:Name="clearBtn"
+                            x:Name="ClearBtn"
                             Width="80"
                             Height="30"
                             Margin="5,0,0,0"
@@ -270,7 +278,7 @@
                             Template="{StaticResource ButtonTemplate}">
                         </Button>
                         <Button
-                            x:Name="confirmBtn"
+                            x:Name="SendBtn"
                             Width="80"
                             Height="30"
                             Margin="0,0,5,0"
