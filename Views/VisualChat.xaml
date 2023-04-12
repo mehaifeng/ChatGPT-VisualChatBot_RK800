@@ -19,7 +19,7 @@
     
     <Border Margin="7">
         <Border.Effect>
-            <DropShadowEffect Color="Gray" BlurRadius="10" Opacity="0.7" Direction="320" ShadowDepth="5"/>
+            <DropShadowEffect Color="Black" BlurRadius="10" Opacity="0.7" Direction="320" ShadowDepth="5"/>
         </Border.Effect>
         <Grid
             Grid.Row="3">
@@ -95,30 +95,34 @@
                         PlacementTarget="{Binding ElementName=MenuToggleBtn}"
                         Placement="Bottom">
                         <Border
-                            Margin="10"
+                            Name="sideMenu"
                             Background="White"
+                            Margin="10"
                             Width="80"
                             Height="80"
                             CornerRadius="7">
                             <Border.Effect>
-                                <DropShadowEffect Color="Gray" Direction="0" BlurRadius="10" Opacity="0.7" ShadowDepth="1"/>
+                                <DropShadowEffect Color="Black" Direction="0" BlurRadius="10" Opacity="0.7" ShadowDepth="1"/>
                             </Border.Effect>
                             <StackPanel
                                 Margin="5"
                                 Orientation="Vertical">
-                                <Button 
-                                    Content="历史记录" 
+                                <Button
+                                    Name="MenuHistory"
+                                    Content="历史记录"
                                     Template="{StaticResource MenuBtnTemplate}"
                                     FontSize="12"
                                     Margin="0,0,0,8"
                                     />
                                 <Button 
+                                    Name="MenuOpenAI"
                                     Content="OpenAI"  
                                     FontSize="12"
                                     Template="{StaticResource MenuBtnTemplate}"
                                     Margin="0,0,0,8"
                                     />
                                 <Button 
+                                    Name="MenuAbout"
                                     Content="关于"  
                                     FontSize="12"
                                     Command="{Binding ClickAboutCommand}"
@@ -127,22 +131,39 @@
                             </StackPanel>
                         </Border>
                     </Popup>
-                    <Button
+                    <ToggleButton
+                        IsThreeState="False"
                         Cursor="Hand"
                         Name="OpenSettingBtn"
-                        Content="{Binding SettingBtnContent}"
+                        Checked="OpenSettingBtn_Checked"
+                        Unchecked="OpenSettingBtn_Checked"
                         HorizontalAlignment="Center"
                         FontSize="28"
-                        Template="{StaticResource WindowControlButtomTemplate}"
-                        Command="{Binding OpenOrCloseConfigCommand}"
-                        CommandParameter="{Binding ElementName=ConfigGrid}"/>
+                        Template="{StaticResource ToggleButtonTemplate}">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content" Value="&#xe797;"/>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content" Value="&#xe799;"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                        <ToggleButton.Triggers>
+                            
+
+                        </ToggleButton.Triggers>
+                    </ToggleButton>
                 </Grid>
                 <Border
                     x:Name="ConfigBorder"
                     BorderBrush="LightGray"
                     BorderThickness="1"
                     Margin="5,0,5,5"
-                    Height="{Binding ConfigGridHeight}"
+                    Height="0"
                     Width="620">
                     <Grid
                         x:Name="ConfigGrid">

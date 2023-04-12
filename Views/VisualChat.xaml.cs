@@ -18,6 +18,7 @@ using VisualChatBot.ViewModels;
 using System.IO;
 using VisualChatBot.Tools;
 using Newtonsoft.Json;
+using System.Windows.Media.Animation;
 
 namespace VisualChatBot
 {
@@ -183,7 +184,11 @@ namespace VisualChatBot
                 File.WriteAllText(userConfigPath, jsonStr);
             }
         }
-
+        /// <summary>
+        /// 黑暗模式切换
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ModeSwitch_Click(object sender, RoutedEventArgs e)
         {
 
@@ -197,6 +202,10 @@ namespace VisualChatBot
                 closeBtn.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
                 MenuToggleBtn.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
                 OpenSettingBtn.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
+                sideMenu.Background = Application.Current.Resources["BackgroundColor"] as SolidColorBrush;
+                MenuHistory.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
+                MenuOpenAI.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
+                MenuAbout.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
                 //AppBody
                 AppBody.Background = Application.Current.Resources["BackgroundColor"] as SolidColorBrush;
                 OutputBox.Background = Application.Current.Resources["TextBoxBackgroundColor"] as SolidColorBrush;
@@ -219,6 +228,10 @@ namespace VisualChatBot
                 closeBtn.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
                 MenuToggleBtn.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
                 OpenSettingBtn.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
+                sideMenu.Background = Application.Current.Resources["DarkBackgroundColor"] as SolidColorBrush;
+                MenuHistory.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
+                MenuOpenAI.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
+                MenuAbout.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
                 //AppBody
                 AppBody.Background = Application.Current.Resources["DarkBackgroundColor"] as SolidColorBrush;
                 OutputBox.Background = Application.Current.Resources["DarkTextBoxBackgroundColor"] as SolidColorBrush;
@@ -230,6 +243,21 @@ namespace VisualChatBot
                 InputBox.Foreground = Application.Current.Resources["DarkTextBoxForegroundColor"] as SolidColorBrush;
                 SendBtn.Background = Application.Current.Resources["DarkButtonBackgroundColor"] as SolidColorBrush;
             }
+        }
+
+        private void OpenSettingBtn_Checked(object sender, RoutedEventArgs e)
+        {
+            DoubleAnimation animation = new DoubleAnimation(0,60,TimeSpan.FromSeconds(0.2));
+            DoubleAnimation animation2 = new DoubleAnimation(60, 0, TimeSpan.FromSeconds(0.2));
+            if (OpenSettingBtn.IsChecked == true)
+            {
+                ConfigBorder.BeginAnimation(HeightProperty, animation);
+            }
+            else if(OpenSettingBtn.IsChecked == false)
+            {
+                ConfigBorder.BeginAnimation(HeightProperty, animation2);
+            }
+            
         }
     }
 }

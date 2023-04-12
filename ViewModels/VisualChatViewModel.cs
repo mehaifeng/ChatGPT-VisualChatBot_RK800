@@ -227,57 +227,58 @@ namespace VisualChatBot.ViewModels
         [RelayCommand]
         private void ClickAbout()
         {
-            ShowOutput += $"\n                ———————————————————————\n";
-            showOutput += $"                 ||                                                                                ||\n";
-            showOutput += $"                 ||                                                                                ||\n";
-            showOutput += $"                 ||                            RK800_V0.1                                 ||\n";
-            showOutput += $"                 ||                                                                                ||\n";
-            showOutput += $"                 ||                    通用API:  OpenAI.com                         ||\n";
-            showOutput += $"                 ||                                                                                ||\n";
-            showOutput += $"                 ||                                                                                ||\n";
-            showOutput += $"                 ||                                                                                ||\n";
-            showOutput += $"                 ||                                                                                ||\n";
-            showOutput += $"                 ||                                                                                ||\n";
-            ShowOutput += $"                ———————————————————————\n";
+            ShowOutput += "\n";
+            ShowOutput += $"                            ———————————————————————\n";
+            ShowOutput += $"                            ||                                                                                ||\n";
+            ShowOutput += $"                            ||                                                                                ||\n";
+            ShowOutput += $"                            ||                            RK800_V0.1                                 ||\n";
+            ShowOutput += $"                            ||                                                                                ||\n";
+            ShowOutput += $"                            ||                    通用API:  OpenAI.com                         ||\n";
+            ShowOutput += $"                            ||                                                                                ||\n";
+            ShowOutput += $"                            ||                                                                                ||\n";
+            ShowOutput += $"                            ||                                                                                ||\n";
+            ShowOutput += $"                            ||                                                                                ||\n";
+            ShowOutput += $"                            ||                                                                                ||\n";
+            ShowOutput += $"                            ———————————————————————\n";
         }
 
         /// <summary>
         /// 开启Or关闭配置栏
         /// </summary>
         /// <param name="o"></param>
-        [RelayCommand]
-        private void OpenOrCloseConfig(Grid o)
-        {
-            //如果是关闭的
-            if ( ConfigGridHeight < 60)
-            {
-                SettingBtnContent = "\xe797";
-                Timer timer = new(0.5);
-                timer.Elapsed += (sender,e) =>
-                {
-                    ConfigGridHeight++;
-                    if(ConfigGridHeight >= 60)
-                    {
-                        timer.Stop();
-                    }
-                };
-                timer.Start();
-            }
-            //如果是打开的
-            if ( ConfigGridHeight >= 60)
-            {
-                SettingBtnContent = "\xe799";
-                Timer timer = new Timer(0.5);
-                timer.Elapsed += (sender, e) =>
-                {
-                    ConfigGridHeight--;
-                    if (ConfigGridHeight == 0)
-                    {
-                        timer.Stop();
-                    }
-                };
-                timer.Start();
-            }
-        }
+        //[RelayCommand]
+        //private void OpenOrCloseConfig(Grid o)
+        //{
+        //    //如果是关闭的
+        //    if ( ConfigGridHeight < 60)
+        //    {
+        //        SettingBtnContent = "\xe797";
+        //        Timer timer = new(0.5);
+        //        timer.Elapsed += (sender,e) =>
+        //        {
+        //            ConfigGridHeight++;
+        //            if(ConfigGridHeight >= 60)
+        //            {
+        //                timer.Stop();
+        //            }
+        //        };
+        //        timer.Start();
+        //    }
+        //    //如果是打开的
+        //    if ( ConfigGridHeight >= 60)
+        //    {
+        //        SettingBtnContent = "\xe799";
+        //        Timer timer = new Timer(0.5);
+        //        timer.Elapsed += (sender, e) =>
+        //        {
+        //            ConfigGridHeight--;
+        //            if (ConfigGridHeight == 0)
+        //            {
+        //                timer.Stop();
+        //            }
+        //        };
+        //        timer.Start();
+        //    }
+        //}
     }
 }

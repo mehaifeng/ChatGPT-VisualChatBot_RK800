@@ -42,6 +42,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+    <!--Toggle样式-->
     <ControlTemplate TargetType="ToggleButton" x:Key="ToggleButtonTemplate">
         <Border>
             <TextBlock 
@@ -54,14 +55,12 @@
         <Border
             x:Name="borderBack"
             Cursor="Hand"
-            BorderBrush="LightGray"
             BorderThickness="0,0,0,1">
             <TextBlock 
                 x:Name="ButtonName"
                 Text="{Binding Content, RelativeSource={RelativeSource AncestorType=Button,Mode=FindAncestor}}"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Foreground="Black"/>
+                VerticalAlignment="Center"/>
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="true">

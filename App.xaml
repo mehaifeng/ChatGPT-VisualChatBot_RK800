@@ -13,9 +13,9 @@
             <SolidColorBrush x:Key="LabelForegroundColor" Color="LightGray"/>
             <SolidColorBrush x:Key="ButtonBackgroundColor" Color="LightGray"/>
             <!--黑暗模式颜色-->
-            <SolidColorBrush x:Key="DarkBackgroundColor" Color="Black"/>
+            <SolidColorBrush x:Key="DarkBackgroundColor" Color="#1F1F1F"/>
             <SolidColorBrush x:Key="DarkForegroundColor" Color="White"/>
-            <SolidColorBrush x:Key="DarkTextBoxBackgroundColor" Color="#696969"/>
+            <SolidColorBrush x:Key="DarkTextBoxBackgroundColor" Color="#454545"/>
             <SolidColorBrush x:Key="DarkTextBoxForegroundColor" Color="White"/>
             <SolidColorBrush x:Key="DarkLabelForegroundColor" Color="#483d8b"/>
             <SolidColorBrush x:Key="DarkButtonBackgroundColor" Color="LightGray"/>
