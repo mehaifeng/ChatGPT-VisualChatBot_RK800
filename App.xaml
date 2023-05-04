@@ -17,8 +17,33 @@
             <SolidColorBrush x:Key="DarkForegroundColor" Color="White"/>
             <SolidColorBrush x:Key="DarkTextBoxBackgroundColor" Color="#454545"/>
             <SolidColorBrush x:Key="DarkTextBoxForegroundColor" Color="White"/>
-            <SolidColorBrush x:Key="DarkLabelForegroundColor" Color="#483d8b"/>
+            <SolidColorBrush x:Key="DarkLabelForegroundColor" Color="#f2f3f4"/>
             <SolidColorBrush x:Key="DarkButtonBackgroundColor" Color="LightGray"/>
+            <!--无边框Textbox样式-->
+            <Style TargetType="{x:Type TextBox}" x:Key="NoBorderTextBox">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Margin" Value="5,10,5,10"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TextBox}">
+                            <Border Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

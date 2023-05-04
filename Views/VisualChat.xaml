@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodel="clr-namespace:VisualChatBot.ViewModels"
+        xmlns:behavior="clr-namespace:VisualChatBot.Behavior"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodel:VisualChatViewModel}"
         ResizeMode="CanMinimize"
@@ -13,7 +14,13 @@
         WindowStartupLocation="CenterScreen"
         Height="800" Width="650">
     <Window.Resources>
-        <ResourceDictionary Source="../Assets/Styles/DefaultStyles.xaml"/>
+        <ResourceDictionary Source="../Assets/Styles/DefaultStyles.xaml">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
     
     
@@ -152,23 +159,20 @@
                                 </Style.Triggers>
                             </Style>
                         </ToggleButton.Style>
-                        <ToggleButton.Triggers>
-                            
-
-                        </ToggleButton.Triggers>
                     </ToggleButton>
                 </Grid>
                 <Border
                     x:Name="ConfigBorder"
-                    BorderBrush="LightGray"
-                    BorderThickness="1"
+                    CornerRadius="7"
+                    Background="LightGray"
                     Margin="5,0,5,5"
                     Height="0"
                     Width="620">
                     <Grid
                         x:Name="ConfigGrid">
                         <StackPanel
-                            Orientation="Horizontal">
+                            Orientation="Horizontal"
+                            Margin="0,10,0,50">
                             <TextBlock 
                                 Name="models_label"
                                 Text="模型"
@@ -180,13 +184,14 @@
                                 BorderThickness="0"
                                 VerticalAlignment="Center"
                                 SelectionChanged="OptionalModelsComboBox_SelectionChanged"
-                                SelectedValue="{Binding Modelstype, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedValue="{Binding UserConfig.Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Margin="0,0,0,0"
-                                Height="20"
-                                Width="140"/>
+                                Height="28"
+                                Width="140"
+                                Template="{StaticResource ComboBoxStyle}"/>
                             <TextBlock 
                                 Name="Object_label"
-                                Text="发散值"
+                                Text="创新度"
                                 Foreground="Gray"
                                 VerticalAlignment="Center"
                                 Margin="5,0,5,0"/>
@@ -194,11 +199,12 @@
                                 x:Name="ObjectDegreeCombobox"
                                 BorderThickness="0"
                                 SelectionChanged="ObjectDegreeCombobox_SelectionChanged"
-                                SelectedValue="{Binding ObjectDegree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedValue="{Binding UserConfig.ObjectDegree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 VerticalAlignment="Center"
                                 Margin="0,0,0,0"
-                                Height="20"
-                                Width="45"/>
+                                Height="28"
+                                Width="45"
+                                Template="{StaticResource ComboBoxStyle}"/>
                             <TextBlock 
                                 Name="system_label"
                                 Text="系统消息"
@@ -206,13 +212,15 @@
                                 VerticalAlignment="Center"
                                 Margin="5,0,5,0"/>
                             <TextBox
-                                Text="{Binding MaxToken, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                x:Name="systemMessageTextbox"
+                                Text="{Binding ., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextChanged="MaxTokensTextbox_TextChanged"
                                 BorderThickness="1"
                                 VerticalAlignment="Center"
                                 Margin="0,0,0,0"
-                                Height="20"
-                                Width="140"/>
+                                Height="28"
+                                Width="140"
+                                Template="{StaticResource TextBoxStyle}"/>
                             <TextBlock 
                                 Name="tokens_label"
                                 Text="MaxTokens"
@@ -221,13 +229,30 @@
                                 Margin="5,0,5,0"/>
                             <TextBox
                                 x:Name="MaxTokensTextbox"
-                                Text="{Binding MaxToken, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Text="{Binding UserConfig.MaxTokens, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextChanged="MaxTokensTextbox_TextChanged"
                                 BorderThickness="1"
                                 VerticalAlignment="Center"
                                 Margin="0,0,0,0"
-                                Height="20"
-                                Width="60"/>
+                                Height="28"
+                                Width="60"
+                                Template="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel 
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            Margin="10,50,0,10">
+                            <TextBlock 
+                                VerticalAlignment="Center"
+                                Text="ApiKey"
+                                Foreground="Gray"
+                                Margin="0,0,5,0"/>
+                            <TextBox 
+                                x:Name="ApiKeyTextbox"
+                                Width="300"
+                                Height="28"
+                                Template="{StaticResource TextBoxStyle}"
+                                Text="{Binding UserConfig.Apikey, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -243,21 +268,27 @@
                     BorderThickness="1"
                     CornerRadius="7"
                     Margin="5,15,5,0">
-                    <TextBox
-                        Name="OutputBox"
-                        TextWrapping="WrapWithOverflow"
-                        Background="#F5F5F5"
-                        AcceptsReturn="True"
-                        IsReadOnly="True"
-                        BorderThickness="0"
-                        Margin="2,2,2,2"
-                        Height="400"
-                        Text="{Binding ShowOutput, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                        GotFocus="Input_GotFocus"/>
+                    <!--#region 对话区-->
+                    <Border
+                        Background="{Binding ElementName=InputBox,Path=Background}"
+                        CornerRadius="7">
+                        <ScrollViewer
+                            behavior:ScrollViewerBehavior.AutoScrollToEnd="{Binding IsScrollToButtom, Mode=TwoWay}"
+                            Margin="5,5,5,5"
+                            VerticalScrollBarVisibility="Auto"
+                            Height="400"
+                            Background="{Binding ElementName=InputBox,Path=Background}">
+                            <StackPanel
+                                Orientation="Vertical"
+                                x:Name="ChatArea">
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                    <!--#endregion-->
                 </Border>
                 <TextBlock 
                     Name="loadingSignal"
-                    Text="//////"
+                    Text="{Binding LoadSignText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                     Foreground="LightGray"
                     HorizontalAlignment="Center"
                     Margin="0,2,0,5"/>
@@ -285,7 +316,8 @@
                     Name="AppButtom"
                     CornerRadius="0,0,5,5"
                     Background="White">
-                    <Grid>
+                    <Grid
+                        Margin="0,5,0,0">
                         <Button
                             x:Name="ClearBtn"
                             Width="80"
@@ -295,7 +327,7 @@
                             VerticalAlignment="Top"
                             Content="&#xe686;"
                             Command="{Binding ClearAllCommand}"
-                            CommandParameter="{Binding ElementName=OutputBox}"
+                            CommandParameter="{Binding ElementName=ChatArea}"
                             Template="{StaticResource ButtonTemplate}">
                         </Button>
                         <Button
@@ -307,8 +339,8 @@
                             VerticalAlignment="Top"
                             Content="&#xe912;"
                             Command="{Binding SendCommand}"
-                            CommandParameter="{Binding ElementName=OutputBox}"
-                            Template="{StaticResource ButtonTemplate}">
+                            Template="{StaticResource ButtonTemplate}"
+                            CommandParameter="{Binding ElementName=ChatArea}">
                         </Button>
                     </Grid>
                 </Border>

@@ -10,6 +10,12 @@ namespace VisualChatBot.Models
 {
     class HttpGetModel
     {
+        /// <summary>
+        /// Api_Key是否有效
+        /// </summary>
+        [JsonIgnore]
+        public static bool IsValidApiKey { get; set; } = true;
+
         [JsonProperty("id")]
         public string? Id { get; set; }
 
@@ -30,11 +36,6 @@ namespace VisualChatBot.Models
 
         [JsonProperty("error")]
         public ErrorInfo? error { get; set; }
-
-        /// <summary>
-        /// Api_Key是否有效
-        /// </summary>
-        public static bool IsValidApiKey { get; set; } = true;
 
         public class Choices
         {

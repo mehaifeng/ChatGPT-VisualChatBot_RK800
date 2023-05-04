@@ -68,4 +68,110 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+    <!--TextBox样式-->
+    <ControlTemplate TargetType="TextBox" x:Key="TextBoxStyle">
+        <Border
+            x:Name="borderBack"
+            BorderThickness="1"
+            Background="{Binding Background, RelativeSource={RelativeSource AncestorType=TextBox,Mode=FindAncestor}}"
+            CornerRadius="7">
+            <TextBox
+                x:Name="TextBoxName"
+                Margin="5,1,5,1"
+                Text="{Binding Text, RelativeSource={RelativeSource AncestorType=TextBox,Mode=FindAncestor}}"
+                Background="{Binding ElementName=borderBack, Path=Background}"
+                FontSize="14"
+                Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=TextBox,Mode=FindAncestor}}"
+                BorderThickness="0"
+                Padding="5"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter TargetName="borderBack" Property="BorderBrush" Value="#C0C0C0"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <!--TroggleButton样式-->
+    <ControlTemplate x:Key="ToggleBtnStyle" TargetType="ToggleButton">
+        <Border 
+            Name="MyBorder">
+            <Path 
+                Name="MyPath"
+                Fill="Black"
+                Height="5"
+                Width="10"
+                Data="M5,5 L10,10 L15,5 z"                      
+                Stretch="Fill">
+            </Path>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="MyPath" Property="Fill" Value="LightGray"></Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <!--ComboBox样式-->
+    <ControlTemplate TargetType="ComboBox" x:Key="ComboBoxStyle">
+        <Border
+            x:Name="mainFarme"
+            Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox, Mode=FindAncestor}}"
+            CornerRadius="7">
+            <Grid
+                Margin="5,0,5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="3*" MaxWidth="20"/>
+                </Grid.ColumnDefinitions>
+                <!--第一列-->
+                <Border Grid.Column="0"
+                        BorderThickness="1,1,0,1">
+                    <TextBox x:Name="myTxt"
+                        Text="{TemplateBinding Text}"
+                        IsReadOnly="True"
+                        Background="{Binding Path=Background, ElementName=mainFarme}"
+                        BorderThickness="0"
+                        VerticalContentAlignment="Center"
+                        FontSize="14"
+                        Foreground="Black"/>
+                </Border>
+                <!--第二列-->
+                <Border 
+                    Grid.Column="1">
+                    <ToggleButton 
+                        Background="{Binding Path=Background, ElementName=mainFarme}"
+                        BorderThickness="0"
+                        IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                        ClickMode="Press"
+                        Template="{StaticResource ToggleBtnStyle}">
+                    </ToggleButton>
+                </Border>
+                <!--弹出选择视图-->
+                <Popup 
+                    Name="MyPopup"
+                    AllowsTransparency="True"
+                    IsOpen="{TemplateBinding IsDropDownOpen}"
+                    Placement="Bottom">
+                    <Border 
+                        Margin="5"
+                        Background="{Binding Path=Background, ElementName=mainFarme}"
+                        CornerRadius="5"
+                        MinWidth="{TemplateBinding Width}"
+                        MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                        <Border.Effect>
+                            <DropShadowEffect ShadowDepth="1" BlurRadius="10" Direction="0"  Color="Black" Opacity="0.7"/>
+                        </Border.Effect>
+                        <ScrollViewer 
+                            Margin="5"
+                            MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                            HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Auto">
+                            <StackPanel 
+                                Background="{x:Null}"
+                                IsItemsHost="True" />
+                        </ScrollViewer>
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+    </ControlTemplate>
 </ResourceDictionary>

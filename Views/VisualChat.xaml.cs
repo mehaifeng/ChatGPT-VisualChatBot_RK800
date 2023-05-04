@@ -19,6 +19,7 @@ using System.IO;
 using VisualChatBot.Tools;
 using Newtonsoft.Json;
 using System.Windows.Media.Animation;
+using Newtonsoft.Json.Linq;
 
 namespace VisualChatBot
 {
@@ -28,13 +29,16 @@ namespace VisualChatBot
     public partial class VisualChat : Window
     {
         VisualChatViewModel _visualChatViewModel;
-        ReadWriteJson readReadJson = new();
-        private string userConfigPath = $"{System.Environment.CurrentDirectory}//UserConfig.json";
+        private string UserConfigPath = $"{System.Environment.CurrentDirectory}//UserConfig.json";
         public VisualChat()
         {
             InitializeComponent();
             _visualChatViewModel = new VisualChatViewModel();
             this.DataContext = _visualChatViewModel;
+            if (_visualChatViewModel.UserConfig.EnableDarkMode)
+            {
+                ModeSwitch_Click(null,null);
+            }
             OptionalModelsComboBox.ItemsSource = new[]
             {
                 "gpt-3.5-turbo",
@@ -73,37 +77,21 @@ namespace VisualChatBot
 
         private void StackPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if ( _visualChatViewModel.ConfigGridHeight >= 60)
+            if (OpenSettingBtn.IsChecked == true)
             {
-                _visualChatViewModel.SettingBtnContent = "\xe799";
-                Timer timer = new Timer(1);
-                timer.Elapsed += (sender, e) =>
-                {
-                    _visualChatViewModel.ConfigGridHeight--;
-                    if (_visualChatViewModel.ConfigGridHeight == 0)
-                    {
-                        timer.Stop();
-                    }
-                };
-                timer.Start();
+                OpenSettingBtn.IsChecked = false;
+                DoubleAnimation animation2 = new DoubleAnimation(90, 0, TimeSpan.FromSeconds(0.2));
+                ConfigBorder.BeginAnimation(HeightProperty, animation2);
             }
         }
 
         private void Input_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (_visualChatViewModel.ConfigGridHeight >= 60)
+            if (OpenSettingBtn.IsChecked == true)
             {
-                _visualChatViewModel.SettingBtnContent = "\xe799";
-                Timer timer = new Timer(1);
-                timer.Elapsed += (sender, e) =>
-                {
-                    _visualChatViewModel.ConfigGridHeight--;
-                    if (_visualChatViewModel.ConfigGridHeight == 0)
-                    {
-                        timer.Stop();
-                    }
-                };
-                timer.Start();
+                OpenSettingBtn.IsChecked = false;
+                DoubleAnimation animation2 = new DoubleAnimation(90, 0, TimeSpan.FromSeconds(0.2));
+                ConfigBorder.BeginAnimation(HeightProperty, animation2);
             }
         }
 
@@ -114,22 +102,26 @@ namespace VisualChatBot
         /// <param name="e"></param>
         private void OptionalModelsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (File.Exists(userConfigPath))
+            if (File.Exists(UserConfigPath))
             {
-                string json = readReadJson.ReadJson(userConfigPath, null);
-                readReadJson.WriteJson(json,"model", _visualChatViewModel.Modelstype);
+                string json = File.ReadAllText(UserConfigPath);
+                JObject configObject = JObject.Parse(json);
+                configObject["model"] = _visualChatViewModel.UserConfig.Model;
+                json = JsonConvert.SerializeObject(configObject);
+                File.WriteAllText(UserConfigPath, json);
             }
             else
             {
                 Dictionary<string, string> UserConfig = new()
                 {
-                    { "model", _visualChatViewModel.Modelstype },
-                    { "objectDegree",  _visualChatViewModel.ObjectDegree.ToString() },
-                    { "maxTokens",  _visualChatViewModel.MaxToken.ToString() },
-                    { "APIKey",  _visualChatViewModel.ApiKey }
+                    { "model", _visualChatViewModel.UserConfig.Model },
+                    { "objectDegree",  _visualChatViewModel.UserConfig.ObjectDegree.ToString() },
+                    { "maxTokens",  _visualChatViewModel.UserConfig.MaxTokens.ToString() },
+                    { "APIKey",  _visualChatViewModel.UserConfig.Apikey },
+                    { "EnableDarkMode", _visualChatViewModel.UserConfig.EnableDarkMode.ToString() }
                 };
                 var jsonStr = JsonConvert.SerializeObject(UserConfig);
-                File.WriteAllText(userConfigPath, jsonStr);
+                File.WriteAllText(UserConfigPath, jsonStr);
             }
         }
 
@@ -140,50 +132,60 @@ namespace VisualChatBot
         /// <param name="e"></param>
         private void ObjectDegreeCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (File.Exists(userConfigPath))
+            if (File.Exists(UserConfigPath))
             {
-                string json = readReadJson.ReadJson(userConfigPath, null);
-                readReadJson.WriteJson(json, "objectDegree", _visualChatViewModel.ObjectDegree.ToString());
+                string json = File.ReadAllText(UserConfigPath);
+                JObject configObject = JObject.Parse(json);
+                configObject["objectDegree"] = _visualChatViewModel.UserConfig.ObjectDegree;
+                json = JsonConvert.SerializeObject(configObject);
+                File.WriteAllText(UserConfigPath, json);
             }
             else
             {
                 Dictionary<string, string> UserConfig = new()
                 {
-                    { "model", _visualChatViewModel.Modelstype },
-                    { "objectDegree",  _visualChatViewModel.ObjectDegree.ToString() },
-                    { "maxTokens",  _visualChatViewModel.MaxToken.ToString() },
-                    { "APIKey",  _visualChatViewModel.ApiKey }
+                    { "model", _visualChatViewModel.UserConfig.Model },
+                    { "objectDegree",  _visualChatViewModel.UserConfig.ObjectDegree.ToString() },
+                    { "maxTokens",  _visualChatViewModel.UserConfig.MaxTokens.ToString() },
+                    { "APIKey",  _visualChatViewModel.UserConfig.Apikey },
+                    { "EnableDarkMode", _visualChatViewModel.UserConfig.EnableDarkMode.ToString() }
                 };
                 var jsonStr = JsonConvert.SerializeObject(UserConfig);
-                File.WriteAllText(userConfigPath, jsonStr);
+                File.WriteAllText(UserConfigPath, jsonStr);
             }
         }
 
         /// <summary>
-        /// MaxTokens改变
+        /// maxTokenss改变
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MaxTokensTextbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (File.Exists(userConfigPath))
+            if (File.Exists(UserConfigPath))
             {
-                string json = readReadJson.ReadJson(userConfigPath, null);
-                readReadJson.WriteJson(json, "maxTokens", _visualChatViewModel.MaxToken.ToString());
+                string json = File.ReadAllText(UserConfigPath);
+                JObject configObject = JObject.Parse(json);
+                configObject["maxTokens"] = _visualChatViewModel.UserConfig.MaxTokens;
+                json = JsonConvert.SerializeObject(configObject);
+                File.WriteAllText(UserConfigPath, json);
             }
             else
             {
                 Dictionary<string, string> UserConfig = new()
                 {
-                    { "model", _visualChatViewModel.Modelstype },
-                    { "objectDegree",  _visualChatViewModel.ObjectDegree.ToString() },
-                    { "maxTokens",  _visualChatViewModel.MaxToken.ToString() },
-                    { "APIKey",  _visualChatViewModel.ApiKey }
+                    { "model", _visualChatViewModel.UserConfig.Model },
+                    { "objectDegree",  _visualChatViewModel.UserConfig.ObjectDegree.ToString() },
+                    { "maxTokens",  _visualChatViewModel.UserConfig.MaxTokens.ToString() },
+                    { "APIKey",  _visualChatViewModel.UserConfig.Apikey },
+                    { "EnableDarkMode", _visualChatViewModel.UserConfig.EnableDarkMode.ToString() }
                 };
                 var jsonStr = JsonConvert.SerializeObject(UserConfig);
-                File.WriteAllText(userConfigPath, jsonStr);
+                File.WriteAllText(UserConfigPath, jsonStr);
             }
         }
+
+
         /// <summary>
         /// 黑暗模式切换
         /// </summary>
@@ -191,8 +193,8 @@ namespace VisualChatBot
         /// <param name="e"></param>
         private void ModeSwitch_Click(object sender, RoutedEventArgs e)
         {
-
-            //如果是明亮模式
+            BrushConverter converter = new BrushConverter();
+            //如果当前是明亮模式
             if (ModeSwitch.Foreground == Brushes.White)
             {
                 ModeSwitch.Foreground = Brushes.Black;
@@ -206,19 +208,33 @@ namespace VisualChatBot
                 MenuHistory.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
                 MenuOpenAI.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
                 MenuAbout.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
+                ConfigBorder.Background = Brushes.LightGray;
+                OptionalModelsComboBox.Background = Brushes.White;
+                ObjectDegreeCombobox.Background = Brushes.White;
+                systemMessageTextbox.Background = Brushes.White;
+                MaxTokensTextbox.Background = Brushes.White;
+                ApiKeyTextbox.Background = Brushes.White;
                 //AppBody
                 AppBody.Background = Application.Current.Resources["BackgroundColor"] as SolidColorBrush;
-                OutputBox.Background = Application.Current.Resources["TextBoxBackgroundColor"] as SolidColorBrush;
-                OutputBox.Foreground = Application.Current.Resources["TextBoxForegroundColor"] as SolidColorBrush;
+                ChatArea.Background = Application.Current.Resources["TextBoxBackgroundColor"] as SolidColorBrush;
                 loadingSignal.Foreground = Application.Current.Resources["LabelForegroundColor"] as SolidColorBrush;
                 //AppButtom
                 AppButtom.Background = Application.Current.Resources["BackgroundColor"] as SolidColorBrush;
                 InputBox.Background = Application.Current.Resources["TextBoxBackgroundColor"] as SolidColorBrush;
                 InputBox.Foreground = Application.Current.Resources["TextBoxForegroundColor"] as SolidColorBrush;
                 SendBtn.Background = Application.Current.Resources["ButtonBackgroundColor"] as SolidColorBrush;
-
+                //生成的对话框
+                foreach (Border border in ChatArea.Children.OfType<Border>())
+                {
+                    if (border.Tag.ToString() == "respondbox")
+                    {
+                        border.Background = Brushes.White;
+                        (border.Child as TextBox).Foreground = Brushes.Black;
+                    }
+                }
+                _visualChatViewModel.UserConfig.EnableDarkMode = false;
             }
-            //如果是黑暗模式
+            //如果当前是黑暗模式
             else if(ModeSwitch.Foreground == Brushes.Black)
             {
                 ModeSwitch.Foreground = Brushes.White;
@@ -232,23 +248,54 @@ namespace VisualChatBot
                 MenuHistory.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
                 MenuOpenAI.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
                 MenuAbout.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
+                ConfigBorder.Background = (Brush)converter.ConvertFromString("#36454f");
+                OptionalModelsComboBox.Background = (Brush)converter.ConvertFromString("#e3dac9");
+                ObjectDegreeCombobox.Background = (Brush)converter.ConvertFromString("#e3dac9");
+                systemMessageTextbox.Background = (Brush)converter.ConvertFromString("#e3dac9");
+                MaxTokensTextbox.Background = (Brush)converter.ConvertFromString("#e3dac9");
+                ApiKeyTextbox.Background = (Brush)converter.ConvertFromString("#e3dac9");
                 //AppBody
                 AppBody.Background = Application.Current.Resources["DarkBackgroundColor"] as SolidColorBrush;
-                OutputBox.Background = Application.Current.Resources["DarkTextBoxBackgroundColor"] as SolidColorBrush;
-                OutputBox.Foreground = Application.Current.Resources["DarkTextBoxForegroundColor"] as SolidColorBrush;
+                ChatArea.Background = Application.Current.Resources["DarkTextBoxBackgroundColor"] as SolidColorBrush;
                 loadingSignal.Foreground = Application.Current.Resources["DarkLabelForegroundColor"] as SolidColorBrush;
                 //AppButtom
                 AppButtom.Background = Application.Current.Resources["DarkBackgroundColor"] as SolidColorBrush;
                 InputBox.Background = Application.Current.Resources["DarkTextBoxBackgroundColor"] as SolidColorBrush;
                 InputBox.Foreground = Application.Current.Resources["DarkTextBoxForegroundColor"] as SolidColorBrush;
                 SendBtn.Background = Application.Current.Resources["DarkButtonBackgroundColor"] as SolidColorBrush;
+                //生成的对话框
+                foreach (Border border in ChatArea.Children.OfType<Border>())
+                {
+                    if (border.Tag.ToString() == "respondbox")
+                    {
+                        border.Background = (Brush)converter.ConvertFromString("#2a52be");
+                        (border.Child as TextBox).Foreground = Brushes.White;
+                    }
+                }
+                _visualChatViewModel.UserConfig.EnableDarkMode = true;
+
             }
+            Dictionary<string, string> UserConfig = new()
+                {
+                    { "model", _visualChatViewModel.UserConfig.Model },
+                    { "objectDegree",  _visualChatViewModel.UserConfig.ObjectDegree.ToString() },
+                    { "maxTokens",  _visualChatViewModel.UserConfig.MaxTokens.ToString() },
+                    { "APIKey",  _visualChatViewModel.UserConfig.Apikey },
+                    { "EnableDarkMode", _visualChatViewModel.UserConfig.EnableDarkMode.ToString() }
+                };
+            var jsonStr = JsonConvert.SerializeObject(UserConfig);
+            File.WriteAllText(UserConfigPath, jsonStr);
         }
 
+        /// <summary>
+        /// 打开设置菜单
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OpenSettingBtn_Checked(object sender, RoutedEventArgs e)
         {
-            DoubleAnimation animation = new DoubleAnimation(0,60,TimeSpan.FromSeconds(0.2));
-            DoubleAnimation animation2 = new DoubleAnimation(60, 0, TimeSpan.FromSeconds(0.2));
+            DoubleAnimation animation = new DoubleAnimation(0,90,TimeSpan.FromSeconds(0.2));
+            DoubleAnimation animation2 = new DoubleAnimation(90, 0, TimeSpan.FromSeconds(0.2));
             if (OpenSettingBtn.IsChecked == true)
             {
                 ConfigBorder.BeginAnimation(HeightProperty, animation);
@@ -257,7 +304,6 @@ namespace VisualChatBot
             {
                 ConfigBorder.BeginAnimation(HeightProperty, animation2);
             }
-            
         }
     }
 }

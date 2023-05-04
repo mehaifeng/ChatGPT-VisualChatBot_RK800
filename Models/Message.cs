@@ -10,7 +10,7 @@ namespace VisualChatBot.Models
 {
     public partial class Message : ObservableObject
     {
-        public string role;
-        public string content;
+        public string? role;
+        public string? content;
     }
 }
