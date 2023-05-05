@@ -10,7 +10,7 @@
             <SolidColorBrush x:Key="ForegroundColor" Color="Black"/>
             <SolidColorBrush x:Key="TextBoxBackgroundColor" Color="#F5F5F5"/>
             <SolidColorBrush x:Key="TextBoxForegroundColor" Color="Black"/>
-            <SolidColorBrush x:Key="LabelForegroundColor" Color="LightGray"/>
+            <SolidColorBrush x:Key="LabelForegroundColor" Color="#36454f"/>
             <SolidColorBrush x:Key="ButtonBackgroundColor" Color="LightGray"/>
             <!--黑暗模式颜色-->
             <SolidColorBrush x:Key="DarkBackgroundColor" Color="#1F1F1F"/>
@@ -29,11 +29,14 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TextBox}">
-                            <Border Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}">
-                                <ScrollViewer x:Name="PART_ContentHost"
-                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            <Border 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                                <ScrollViewer 
+                                    x:Name="PART_ContentHost"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                </ScrollViewer>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">

@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodel="clr-namespace:VisualChatBot.ViewModels"
+        xmlns:local="clr-namespace:VisualChatBot"
+        xmlns:converters="clr-namespace:VisualChatBot.Converters"
         xmlns:behavior="clr-namespace:VisualChatBot.Behavior"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodel:VisualChatViewModel}"
@@ -17,7 +19,7 @@
         <ResourceDictionary Source="../Assets/Styles/DefaultStyles.xaml">
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    
+                    <converters:MultiBindingConverter x:Key="MultiBindingConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -114,13 +116,134 @@
                             <StackPanel
                                 Margin="5"
                                 Orientation="Vertical">
-                                <Button
-                                    Name="MenuHistory"
-                                    Content="历史记录"
-                                    Template="{StaticResource MenuBtnTemplate}"
+                                <ToggleButton
+                                    x:Name="MenuHistory"
+                                    Content="历史记录 >"
+                                    BorderBrush="{x:Null}"
+                                    Background="{x:Null}"
+                                    IsEnabled="{Binding IsHistoryPopupAvaliable}"
+                                    Template="{StaticResource MenuToggleTemplate}"
                                     FontSize="12"
-                                    Margin="0,0,0,8"
-                                    />
+                                    Margin="0,5,0,8"/>
+                                <Popup
+                                    x:Name="HistoryReviewPopup"
+                                    AllowsTransparency="True"
+                                    IsOpen="{Binding ElementName=MenuHistory, Path=IsChecked}"
+                                    PlacementTarget="{Binding ElementName=MenuHistory}"
+                                    Placement="Right">
+                                    <Border
+                                        x:Name="HistoryReviewBorder"
+                                        Margin="5"
+                                        MaxWidth="300"
+                                        MaxHeight="320"
+                                        Background="{Binding ElementName=sideMenu, Path=Background}"
+                                        BorderThickness="0"
+                                        CornerRadius="7">
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="Black" Direction="0" BlurRadius="10" Opacity="0.7" ShadowDepth="1"/>
+                                        </Border.Effect>
+                                        <ListBox
+                                            BorderBrush="Transparent"
+                                            ItemsSource="{Binding MenuHistorySources, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                            SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Background="{x:Null}">
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="ListBoxItem">
+                                                                <Border
+                                                                    CornerRadius="7"
+                                                                    BorderThickness="0"
+                                                                    Background="{TemplateBinding Background}">
+                                                                    <ContentPresenter/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="LightGray"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style> 
+                                            </ListBox.ItemContainerStyle>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border 
+                                                        BorderThickness="0">
+                                                        <Grid MaxWidth="300">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="0.9*"/>
+                                                                <ColumnDefinition Width="0.1*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Button 
+                                                                Content="{Binding .}"
+                                                                Command="{Binding DataContext.ReviewHistoryChatCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                                                Grid.Column="0"
+                                                                Background="White"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Left">
+                                                                <Button.CommandParameter>
+                                                                    <MultiBinding Converter="{StaticResource MultiBindingConverter}">
+                                                                        <Binding Path="."/>
+                                                                        <Binding ElementName="ChatArea"/>
+                                                                    </MultiBinding>
+                                                                </Button.CommandParameter>
+                                                                <Button.Style>
+                                                                    <Style TargetType="Button">
+                                                                        <Setter Property="Template">
+                                                                            <Setter.Value>
+                                                                                <ControlTemplate>
+                                                                                    <TextBlock 
+                                                                                        ToolTip="{Binding Path=Content, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}"
+                                                                                        Foreground="{Binding ElementName=MenuHistory, Path=Foreground}"
+                                                                                        Text="{Binding Path=Content, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}"/>
+                                                                                </ControlTemplate>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                        <Style.Triggers>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter Property="Background" Value="Transparent"/>
+                                                                            </Trigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Button.Style>
+                                                            </Button>
+                                                            <Button
+                                                                Command="{Binding DataContext.DeleteHistoryChatCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                                                Grid.Column="1"
+                                                                HorizontalAlignment="Right"
+                                                                Content="×"
+                                                                Margin="5,0,0,0">
+                                                                <Button.CommandParameter>
+                                                                    <MultiBinding Converter="{StaticResource MultiBindingConverter}">
+                                                                        <Binding Path="."/>
+                                                                        <Binding ElementName="ChatArea"/>
+                                                                    </MultiBinding>
+                                                                </Button.CommandParameter>
+                                                                <Button.Style>
+                                                                    <Style TargetType="Button">
+                                                                        <Setter Property="Template">
+                                                                            <Setter.Value>
+                                                                                <ControlTemplate>
+                                                                                    <TextBlock 
+                                                                                        Cursor="Hand"
+                                                                                        ToolTip="删除"
+                                                                                        Text="{Binding Content, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}"/>
+                                                                                </ControlTemplate>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                    </Style>
+                                                                </Button.Style>
+                                                            </Button>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </Border>
+                                </Popup>
                                 <Button 
                                     Name="MenuOpenAI"
                                     Content="OpenAI"  
@@ -270,6 +393,7 @@
                     Margin="5,15,5,0">
                     <!--#region 对话区-->
                     <Border
+                        x:Name="ChatAreaFram"
                         Background="{Binding ElementName=InputBox,Path=Background}"
                         CornerRadius="7">
                         <ScrollViewer
@@ -279,8 +403,8 @@
                             Height="400"
                             Background="{Binding ElementName=InputBox,Path=Background}">
                             <StackPanel
-                                Orientation="Vertical"
-                                x:Name="ChatArea">
+                                 x:Name="ChatArea"
+                                Orientation="Vertical">
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
@@ -289,7 +413,7 @@
                 <TextBlock 
                     Name="loadingSignal"
                     Text="{Binding LoadSignText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                    Foreground="LightGray"
+                    Foreground="#36454f"
                     HorizontalAlignment="Center"
                     Margin="0,2,0,5"/>
                 <Border 

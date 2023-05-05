@@ -68,6 +68,25 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+    <!--菜单TroggleButton样式-->
+    <ControlTemplate TargetType="ToggleButton" x:Key="MenuToggleTemplate">
+        <Border
+            x:Name="borderBack"
+            Cursor="Hand"
+            BorderThickness="0,0,0,1">
+            <TextBlock 
+                Cursor="Hand"
+                Background="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ToggleButton}, Path=Background}"
+                Text="{Binding Content, RelativeSource={RelativeSource AncestorType=ToggleButton,Mode=FindAncestor}}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter TargetName="borderBack" Property="Background" Value="#C0C0C0"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
     <!--TextBox样式-->
     <ControlTemplate TargetType="TextBox" x:Key="TextBoxStyle">
         <Border
@@ -174,4 +193,13 @@
             </Grid>
         </Border>
     </ControlTemplate>
+    <!--ListBoxItem样式-->
+    <Style TargetType="ListBoxItem" x:Key="ListBoxItemStyle">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

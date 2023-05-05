@@ -26,6 +26,7 @@ namespace VisualChatBot.Tools
                 responType = JsonConvert.DeserializeObject<HttpGetModel>(responseContent);
                 if (response.IsSuccessStatusCode == false)
                 {
+                    HttpGetModel.IsRequestSuccess = false;
                     if (responType.error.code == "invalid_api_key")
                     {
                         HttpGetModel.IsValidApiKey = false;
@@ -38,9 +39,13 @@ namespace VisualChatBot.Tools
                     string errorInfo = $"\n#错误类型：{responType.error.type}\n#错误内容：{responType.error.message}";
                     return errorInfo;
                 }
-                HttpGetModel.IsValidApiKey = true;
-                // 返回接收到的内容
-                return await Task.FromResult(result: responType?.Choicese?.First().MessageDetail.content);
+                else
+                {
+                    HttpGetModel.IsRequestSuccess = true;
+                    HttpGetModel.IsValidApiKey = true;
+                    // 返回接收到的内容
+                    return await Task.FromResult(result: responType?.Choicese?.First().MessageDetail.content);
+                }
             }
             catch(Exception ex)
             {

@@ -27,13 +27,22 @@ using System.Windows.Data;
 using VisualChatBot.Converters;
 using System.Windows.Media.Effects;
 using System.Threading;
+using System.Collections.ObjectModel;
+using System.Windows.Markup;
 
 namespace VisualChatBot.ViewModels
 {
     public partial class VisualChatViewModel : ObservableObject, INotifyPropertyChanged
     {
+        //配置文件地址
         string configPath = $"{System.Environment.CurrentDirectory}//UserConfig.json";
+        //历史文件地址
+        string historyChatPath = $"{System.Environment.CurrentDirectory}//HistoryChat.json";
+        //API地址
         string urlAddress = $"https://api.openai.com/v1/chat/completions";
+        //发送次数
+        int sendTimes = 0 ;
+        private List<HistoryMessage> historyMessages = new List<HistoryMessage>();
         Tools.WebRequest request;
         public VisualChatViewModel()
         {
@@ -45,9 +54,40 @@ namespace VisualChatBot.ViewModels
 
         void InitLoad()
         {
-            string configJson = File.ReadAllText(configPath);
-            UserConfig = JsonConvert.DeserializeObject<UserConfig>(configJson);
+            try
+            {
+                #region 配置信息
+                if (File.Exists(configPath))
+                {
+                    string configJson = File.ReadAllText(configPath);
+                    UserConfig = JsonConvert.DeserializeObject<UserConfig>(configJson);
+                }
+                #endregion
+                #region 历史对话
+                if (File.Exists(historyChatPath))
+                {
+                    string historyMessageStr = File.ReadAllText(historyChatPath);
+                    historyMessages = JsonConvert.DeserializeObject<List<HistoryMessage>>(historyMessageStr);
+                    MenuHistorySources = new ObservableCollection<string>(historyMessages.Select(m => m.Title));
+                }
+                if (MenuHistorySources.Count == 0)
+                {
+                    IsHistoryPopupAvaliable = false;
+                }
+                else
+                {
+                    IsHistoryPopupAvaliable = true;
+                }
+                #endregion
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
+
+        [ObservableProperty]
+        private string selectedItem;
 
         /// <summary>
         /// 消息对象集合
@@ -85,6 +125,24 @@ namespace VisualChatBot.ViewModels
         /// </summary>
         [ObservableProperty]
         private string loadSignText = "////////////////////";
+
+        /// <summary>
+        /// 菜单->历史记录数据集合
+        /// </summary>
+        [ObservableProperty]
+        private ObservableCollection<string> menuHistorySources;
+
+        /// <summary>
+        /// 菜单->历史记录数据
+        /// </summary>
+        [ObservableProperty]
+        private string title;
+
+        /// <summary>
+        /// 历史记录是否可用
+        /// </summary>
+        [ObservableProperty]
+        private bool isHistoryPopupAvaliable;
 
         /// <summary>
         /// 发送+以及接收到消息
@@ -156,12 +214,16 @@ namespace VisualChatBot.ViewModels
                     LoadSignText = "////////////////////";
                 }
                 respondTemp = getApiRespond.Result;
-                //将生成的回复加入到下一次入参
-                messageList.Add(new Message
+                //将生成的回复加入到下一次入参(只有Http请求成功的才加入)
+                if(HttpGetModel.IsRequestSuccess == true)
                 {
-                    role = "assistant",
-                    content = respondTemp
-                });
+                    messageList.Add(new Message
+                    {
+                        role = "assistant",
+                        content = respondTemp
+                    });
+                    sendTimes++;
+                }
                 MyInput = string.Empty;
                 #endregion
                 #region 接收处理流
@@ -205,9 +267,50 @@ namespace VisualChatBot.ViewModels
                 o.Children.Add(border);
                 //逐字显示
                 ShowGenerateText(receivedViewModel);
+                //总结主要话题
+                SummarizeTitle();
                 #endregion
             }
+            if (string.IsNullOrEmpty(UserConfig.Apikey))
+            {
+
+            }
         }
+
+        /// <summary>
+        /// 总结对话标题
+        /// </summary>
+        async Task SummarizeTitle()
+        {
+            if (!historyMessages.Any(t => t.Title == Title))
+            {
+                if (sendTimes == 3)
+                {
+                    Message item = new Message();
+                    item.content = "请总结以上对话并返回一个标题";
+                    item.role = "system";
+                    messageList.Add(item);
+                    var input = new
+                    {
+                        model = UserConfig.Model,
+                        messages = messageList
+                    };
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(input), Encoding.UTF8, "application/json");
+                    string titletemp = await request.WebRequestMethon(userConfig.Apikey, urlAddress, content);
+                    if (HttpGetModel.IsRequestSuccess == true)
+                    {
+                        Title = $"#{titletemp}#";
+                        messageList.Remove(item);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 加载效果
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         async Task LoadingEffect(CancellationTokenSource cancellationToken)
         {
             LoadSignText = string.Empty;
@@ -245,8 +348,9 @@ namespace VisualChatBot.ViewModels
         {
             return await request.WebRequestMethon(userConfig.Apikey, urlAddress, requestContent);
         }
+
         /// <summary>
-        /// 显示回复
+        /// 逐字显示回复
         /// </summary>
         async void ShowGenerateText(ReceivedViewModel receivedViewModel)
         {
@@ -263,12 +367,123 @@ namespace VisualChatBot.ViewModels
         [RelayCommand]
         void ClearAll(StackPanel o)
         {
-            o.Children.Clear();
+            if(o.Children.Count == 0)
+            {
+                return;
+            }
+            if (!historyMessages.Any(t => t.Title == Title))
+            {
+                string currentChatElement = o.ToXAMLString();
+                historyMessages.Add(new HistoryMessage
+                {
+                    AllMessage = messageList,
+                    Title = !string.IsNullOrEmpty(Title) ? Title : $"{messageList.First().content}【{System.DateTime.Now}】",
+                    ControlStruct = currentChatElement
+                });
+                string historyToStr = JsonConvert.SerializeObject(historyMessages, Formatting.Indented);
+                File.WriteAllText(historyChatPath, historyToStr);
+                IsHistoryPopupAvaliable = true;
+                sendTimes = 0;
+                o.Children.Clear();
+                MenuHistorySources.Add(Title);
+            }
+            else if(historyMessages.Any(t => t.Title == Title)&&o.Children.Count>0)
+            {
+                var item = historyMessages.First(t => t.Title == Title);
+                string currentChatElement = o.ToXAMLString();
+                item.ControlStruct = currentChatElement;
+                item.AllMessage = messageList;
+                string historyToStr = JsonConvert.SerializeObject(historyMessages, Formatting.Indented);
+                File.WriteAllText(historyChatPath, historyToStr);
+                o.Children.Clear();
+            }
+        }
+        /// <summary>
+        /// 切换到历史对话
+        /// </summary>
+        /// <param name="o"></param>
+        [RelayCommand]
+        void ReviewHistoryChat(object[] o)
+        {
+            string title = o[0].ToString(); 
+            StackPanel stackPanel = (StackPanel)o[1];
+             if (title != null&&stackPanel !=null)
+            {
+                var item = historyMessages.First(t => t.Title == title);
+                var controlStructStr = item.ControlStruct;
+                StackPanel replacePanel = (StackPanel)XamlReader.Parse(controlStructStr);
+                stackPanel.Children.Clear();    
+                List<UIElement> replacePanelTemp = new List<UIElement>();
+                foreach(UIElement childTemp in replacePanel.Children)
+                {
+                    replacePanelTemp.Add(childTemp);
+                }
+                foreach(UIElement child in replacePanelTemp)
+                {
+                    replacePanel.Children.Remove(child);
+                    stackPanel.Children.Add(child);
+                }
+                messageList = item.AllMessage;
+                Title = item.Title;
+                RecoveryThemeOnChatBox(stackPanel);
+            }
         }
 
-        void CreateSend(StackPanel o)
+        [RelayCommand]
+        void DeleteHistoryChat(object[] o)
         {
-
+            if (o[0] != null && o[1] != null)
+            {
+                if (o[0].ToString() != null)
+                {
+                    var item = historyMessages.First(t => t.Title == o[0].ToString());
+                    historyMessages.Remove(item);
+                    MenuHistorySources.Remove(o[0].ToString());
+                    string historyToStr = JsonConvert.SerializeObject(historyMessages, Formatting.Indented);
+                    File.WriteAllText(historyChatPath, historyToStr);
+                    if (messageList.Count > 0 && historyMessages.Count > 0 && historyMessages.Last().Title == o[0].ToString())
+                    {
+                        var stackpanel = (StackPanel)o[1];
+                        stackpanel.Children.Clear();
+                    }
+                    else if (historyMessages.Count == 0)
+                    {
+                        var stackpanel = (StackPanel)o[1];
+                        stackpanel.Children.Clear();
+                        IsHistoryPopupAvaliable = false;
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 恢复主题色
+        /// </summary>
+        /// <param name="o"></param>
+        void RecoveryThemeOnChatBox(StackPanel o)
+        {
+            BrushConverter converter = new BrushConverter();
+            if (UserConfig.EnableDarkMode == false)
+            {
+                foreach (Border border in o.Children.OfType<Border>())
+                {
+                    if (border.Tag.ToString() == "respondbox")
+                    {
+                        border.Background = Brushes.White;
+                        (border.Child as TextBox).Foreground = Brushes.Black;
+                    }
+                }
+            }
+            else if(UserConfig.EnableDarkMode == true)
+            {
+                foreach (Border border in o.Children.OfType<Border>())
+                {
+                    if (border.Tag.ToString() == "respondbox")
+                    {
+                        border.Background = (Brush)converter.ConvertFromString("#2a52be");
+                        (border.Child as TextBox).Foreground = Brushes.White;
+                    }
+                }
+            }
         }
     }
 }

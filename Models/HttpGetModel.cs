@@ -15,6 +15,11 @@ namespace VisualChatBot.Models
         /// </summary>
         [JsonIgnore]
         public static bool IsValidApiKey { get; set; } = true;
+        /// <summary>
+        /// 请求是否成功
+        /// </summary>
+        [JsonIgnore]
+        public static bool IsRequestSuccess { get; set; }
 
         [JsonProperty("id")]
         public string? Id { get; set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VisualChatBot.Models
 {
-    public class LastMessage
+    public class HistoryMessage
     {
         /// <summary>
         /// 上次的所有对话
