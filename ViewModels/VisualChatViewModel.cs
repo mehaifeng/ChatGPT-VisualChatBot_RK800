@@ -49,6 +49,7 @@ namespace VisualChatBot.ViewModels
             UserConfig = new UserConfig();
             messageList = new List<Message>();
             request = new Tools.WebRequest();
+            MenuHistorySources = new ObservableCollection<string>();
             InitLoad();
         }
 
@@ -362,6 +363,13 @@ namespace VisualChatBot.ViewModels
                     receivedViewModel.Content += respondTemp[i];
                 }
             }
+        }
+
+        [RelayCommand]
+        void SaveConfig()
+        {
+            string configStr = JsonConvert.SerializeObject(userConfig, Formatting.Indented);
+            File.WriteAllText(configPath, configStr);
         }
 
         [RelayCommand]

@@ -46,16 +46,16 @@ namespace VisualChatBot
             };
             ObjectDegreeCombobox.ItemsSource = new[]
             {
-                0,
-                0.1,
-                0.2,
-                0.3,
-                0.4,
-                0.5,
-                0.6,
-                0.7,
-                0.8,
-                0.9
+                "0",
+                "0.1",
+                "0.2",
+                "0.3",
+                "0.4",
+                "0.5",
+                "0.6",
+                "0.7",
+                "0.8",
+                "0.9"
             };
             ModeSwitch.Content = "\xe687";
         }
@@ -114,10 +114,10 @@ namespace VisualChatBot
             {
                 Dictionary<string, string> UserConfig = new()
                 {
-                    { "model", _visualChatViewModel.UserConfig.Model },
-                    { "objectDegree",  _visualChatViewModel.UserConfig.ObjectDegree.ToString() },
-                    { "maxTokens",  _visualChatViewModel.UserConfig.MaxTokens.ToString() },
-                    { "APIKey",  _visualChatViewModel.UserConfig.Apikey },
+                    { "model", _visualChatViewModel.UserConfig?.Model },
+                    { "objectDegree",  _visualChatViewModel.UserConfig.ObjectDegree?.ToString() },
+                    { "maxTokens",  _visualChatViewModel.UserConfig.MaxTokens?.ToString() },
+                    { "APIKey",  _visualChatViewModel.UserConfig?.Apikey },
                     { "EnableDarkMode", _visualChatViewModel.UserConfig.EnableDarkMode.ToString() }
                 };
                 var jsonStr = JsonConvert.SerializeObject(UserConfig);
@@ -125,65 +125,9 @@ namespace VisualChatBot
             }
         }
 
-        /// <summary>
-        /// 主客观改变
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ObjectDegreeCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (File.Exists(UserConfigPath))
-            {
-                string json = File.ReadAllText(UserConfigPath);
-                JObject configObject = JObject.Parse(json);
-                configObject["objectDegree"] = _visualChatViewModel.UserConfig.ObjectDegree;
-                json = JsonConvert.SerializeObject(configObject);
-                File.WriteAllText(UserConfigPath, json);
-            }
-            else
-            {
-                Dictionary<string, string> UserConfig = new()
-                {
-                    { "model", _visualChatViewModel.UserConfig.Model },
-                    { "objectDegree",  _visualChatViewModel.UserConfig.ObjectDegree.ToString() },
-                    { "maxTokens",  _visualChatViewModel.UserConfig.MaxTokens.ToString() },
-                    { "APIKey",  _visualChatViewModel.UserConfig.Apikey },
-                    { "EnableDarkMode", _visualChatViewModel.UserConfig.EnableDarkMode.ToString() }
-                };
-                var jsonStr = JsonConvert.SerializeObject(UserConfig);
-                File.WriteAllText(UserConfigPath, jsonStr);
-            }
-        }
 
-        /// <summary>
-        /// maxTokenss改变
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MaxTokensTextbox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (File.Exists(UserConfigPath))
-            {
-                string json = File.ReadAllText(UserConfigPath);
-                JObject configObject = JObject.Parse(json);
-                configObject["maxTokens"] = _visualChatViewModel.UserConfig.MaxTokens;
-                json = JsonConvert.SerializeObject(configObject);
-                File.WriteAllText(UserConfigPath, json);
-            }
-            else
-            {
-                Dictionary<string, string> UserConfig = new()
-                {
-                    { "model", _visualChatViewModel.UserConfig.Model },
-                    { "objectDegree",  _visualChatViewModel.UserConfig.ObjectDegree.ToString() },
-                    { "maxTokens",  _visualChatViewModel.UserConfig.MaxTokens.ToString() },
-                    { "APIKey",  _visualChatViewModel.UserConfig.Apikey },
-                    { "EnableDarkMode", _visualChatViewModel.UserConfig.EnableDarkMode.ToString() }
-                };
-                var jsonStr = JsonConvert.SerializeObject(UserConfig);
-                File.WriteAllText(UserConfigPath, jsonStr);
-            }
-        }
+
+
 
 
         /// <summary>
@@ -275,16 +219,7 @@ namespace VisualChatBot
                 _visualChatViewModel.UserConfig.EnableDarkMode = true;
 
             }
-            Dictionary<string, string> UserConfig = new()
-                {
-                    { "model", _visualChatViewModel.UserConfig.Model },
-                    { "objectDegree",  _visualChatViewModel.UserConfig.ObjectDegree.ToString() },
-                    { "maxTokens",  _visualChatViewModel.UserConfig.MaxTokens.ToString() },
-                    { "APIKey",  _visualChatViewModel.UserConfig.Apikey },
-                    { "EnableDarkMode", _visualChatViewModel.UserConfig.EnableDarkMode.ToString() }
-                };
-            var jsonStr = JsonConvert.SerializeObject(UserConfig);
-            File.WriteAllText(UserConfigPath, jsonStr);
+            _visualChatViewModel.SaveConfigCommand.Execute(null);
         }
 
         /// <summary>
