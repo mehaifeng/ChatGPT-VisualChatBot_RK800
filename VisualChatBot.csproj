@@ -8,10 +8,15 @@
     <BaseOutputPath>bin\</BaseOutputPath>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <ApplicationIcon>artificial-removebg-preview.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Assets\Fonts\iconfont.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="artificial-removebg-preview.ico" />
   </ItemGroup>
 
   <ItemGroup>

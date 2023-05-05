@@ -40,6 +40,8 @@ namespace VisualChatBot.ViewModels
         string historyChatPath = $"{System.Environment.CurrentDirectory}//HistoryChat.json";
         //API地址
         string urlAddress = $"https://api.openai.com/v1/chat/completions";
+        //是否处于发送状态
+        bool isSending = false;
         //发送次数
         int sendTimes = 0 ;
         private List<HistoryMessage> historyMessages = new List<HistoryMessage>();
@@ -152,6 +154,7 @@ namespace VisualChatBot.ViewModels
         [RelayCommand]
         async void Send(StackPanel o)
         {
+            if(isSending) return;
             if (!string.IsNullOrEmpty(UserConfig.Apikey)&&!string.IsNullOrEmpty(MyInput))
             {
                 #region 控件生成流
@@ -205,6 +208,7 @@ namespace VisualChatBot.ViewModels
                 };
                 MyInput = string.Empty;
                 string inputJson = JsonConvert.SerializeObject(input);
+                isSending = true;
                 StringContent requestContent = new StringContent(inputJson, Encoding.UTF8, "application/json");
                 CancellationTokenSource tokenSource = new CancellationTokenSource();
                 var getApiRespond = GetAPIRespond(requestContent);
@@ -270,6 +274,7 @@ namespace VisualChatBot.ViewModels
                 ShowGenerateText(receivedViewModel);
                 //总结主要话题
                 SummarizeTitle();
+                isSending = false;
                 #endregion
             }
             if (string.IsNullOrEmpty(UserConfig.Apikey))
