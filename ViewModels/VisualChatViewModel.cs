@@ -34,15 +34,29 @@ namespace VisualChatBot.ViewModels
 {
     public partial class VisualChatViewModel : ObservableObject, INotifyPropertyChanged
     {
-        //配置文件地址
+        /// <summary>
+        /// 配置文件地址
+        /// </summary>
         string configPath = $"{System.Environment.CurrentDirectory}//UserConfig.json";
-        //历史文件地址
+        /// <summary>
+        /// 历史文件地址
+        /// </summary>
         string historyChatPath = $"{System.Environment.CurrentDirectory}//HistoryChat.json";
-        //API地址
+        /// <summary>
+        /// API地址
+        /// </summary>
         string urlAddress = $"https://api.openai.com/v1/chat/completions";
-        //是否处于发送状态
+        /// <summary>
+        /// 是否处于发送状态
+        /// </summary>
         bool isSending = false;
-        //发送次数
+        /// <summary>
+        /// 是否是历史对话导出的
+        /// </summary>
+        bool isHistoryChat = false;
+        /// <summary>
+        /// 发送次数
+        /// </summary>
         int sendTimes = 0 ;
         private List<HistoryMessage> historyMessages = new List<HistoryMessage>();
         Tools.WebRequest request;
@@ -273,7 +287,7 @@ namespace VisualChatBot.ViewModels
                 //逐字显示
                 ShowGenerateText(receivedViewModel);
                 //总结主要话题
-                SummarizeTitle();
+                SummarizeTitle(o);
                 isSending = false;
                 #endregion
             }
@@ -286,9 +300,9 @@ namespace VisualChatBot.ViewModels
         /// <summary>
         /// 总结对话标题
         /// </summary>
-        async Task SummarizeTitle()
+        async Task SummarizeTitle(StackPanel o)
         {
-            if (!historyMessages.Any(t => t.Title == Title))
+            if (!historyMessages.Any(t=>t.Title==Title))
             {
                 if (sendTimes == 3)
                 {
@@ -309,6 +323,10 @@ namespace VisualChatBot.ViewModels
                         messageList.Remove(item);
                     }
                 }
+            }
+            if (o.Children.Count < 6 && o.Children.Count > 0 && isHistoryChat == false)
+            {
+                Title = $"#{messageList[messageList.Count-2].content}【{System.DateTime.Now}】#";
             }
         }
 
@@ -389,8 +407,8 @@ namespace VisualChatBot.ViewModels
                 string currentChatElement = o.ToXAMLString();
                 historyMessages.Add(new HistoryMessage
                 {
-                    AllMessage = messageList,
-                    Title = !string.IsNullOrEmpty(Title) ? Title : $"{messageList.First().content}【{System.DateTime.Now}】",
+                    AllMessage = new List<Message>(messageList),
+                    Title = Title,
                     ControlStruct = currentChatElement
                 });
                 string historyToStr = JsonConvert.SerializeObject(historyMessages, Formatting.Indented);
@@ -399,17 +417,20 @@ namespace VisualChatBot.ViewModels
                 sendTimes = 0;
                 o.Children.Clear();
                 MenuHistorySources.Add(Title);
+                messageList.Clear();
             }
             else if(historyMessages.Any(t => t.Title == Title)&&o.Children.Count>0)
             {
                 var item = historyMessages.First(t => t.Title == Title);
                 string currentChatElement = o.ToXAMLString();
                 item.ControlStruct = currentChatElement;
-                item.AllMessage = messageList;
+                item.AllMessage = new List<Message>(messageList);
                 string historyToStr = JsonConvert.SerializeObject(historyMessages, Formatting.Indented);
                 File.WriteAllText(historyChatPath, historyToStr);
                 o.Children.Clear();
+                messageList.Clear();
             }
+            isHistoryChat = false;
         }
         /// <summary>
         /// 切换到历史对话
@@ -436,8 +457,9 @@ namespace VisualChatBot.ViewModels
                     replacePanel.Children.Remove(child);
                     stackPanel.Children.Add(child);
                 }
+                isHistoryChat = true;
                 messageList = item.AllMessage;
-                Title = item.Title;
+                Title = title;
                 RecoveryThemeOnChatBox(stackPanel);
             }
         }
@@ -454,7 +476,7 @@ namespace VisualChatBot.ViewModels
                     MenuHistorySources.Remove(o[0].ToString());
                     string historyToStr = JsonConvert.SerializeObject(historyMessages, Formatting.Indented);
                     File.WriteAllText(historyChatPath, historyToStr);
-                    if (messageList.Count > 0 && historyMessages.Count > 0 && historyMessages.Last().Title == o[0].ToString())
+                    if (messageList.Count > 0 && historyMessages.Count > 0)
                     {
                         var stackpanel = (StackPanel)o[1];
                         stackpanel.Children.Clear();
