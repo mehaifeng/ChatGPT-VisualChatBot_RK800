@@ -1,20 +1,15 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net;
-using System.Reflection.Metadata;
-using System.Text;
 using System.Threading.Tasks;
 using VisualChatBot.Models;
-using System.IO;
 
 namespace VisualChatBot.Tools
 {
     public class WebRequest
-    { 
-        public async Task<string?> WebRequestMethon(string? apikey,string? requestUrl,StringContent? input)
+    {
+        public async Task<string?> WebRequestMethon(string? apikey, string? requestUrl, StringContent? input)
         {
             try
             {
@@ -47,7 +42,7 @@ namespace VisualChatBot.Tools
                     return await Task.FromResult(result: responType?.Choicese?.First().MessageDetail.content);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return $"\n#未经处理的异常：\n{ex}";
             }

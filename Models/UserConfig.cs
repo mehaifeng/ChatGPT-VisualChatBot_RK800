@@ -1,23 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VisualChatBot.Models
 {
-    public partial class UserConfig :ObservableObject
+    public partial class UserConfig : ObservableObject
     {
-        [ObservableProperty,JsonProperty("APIKey")]
+        [ObservableProperty, JsonProperty("APIKey")]
         string? apikey;
-        [ObservableProperty,JsonProperty("model")]
+        [ObservableProperty, JsonProperty("model")]
         string? model;
-        [ObservableProperty,JsonProperty("maxTokens")]
+        [ObservableProperty, JsonProperty("maxTokens")]
         string? maxTokens;
-        [ObservableProperty,JsonProperty("objectDegree")]
+        [ObservableProperty, JsonProperty("objectDegree")]
         string? objectDegree;
+        [ObservableProperty, JsonProperty("systemOrder")]
+        string? systemOrder;
         [ObservableProperty]
         bool enableDarkMode;
     }

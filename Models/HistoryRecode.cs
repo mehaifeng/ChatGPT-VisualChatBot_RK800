@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace VisualChatBot.Models
 {
@@ -15,7 +11,7 @@ namespace VisualChatBot.Models
         /// <summary>
         /// 对话标题
         /// </summary>
-        public string Title { get; set; } 
+        public string Title { get; set; }
         /// <summary>
         /// 控件构造
         /// </summary>

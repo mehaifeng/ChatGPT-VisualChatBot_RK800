@@ -1,34 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Timers;
-using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
-using CommunityToolkit.Mvvm;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using VisualChatBot.Tools;
-using System.Net;
-using Newtonsoft.Json;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Windows.Media;
-using VisualChatBot.Models;
-using System.Reflection.Metadata;
-using System.IO;
-using System.Windows.Input;
-using System.ComponentModel;
-using Newtonsoft.Json.Linq;
-using System.Drawing;
 using System.Windows.Data;
-using VisualChatBot.Converters;
-using System.Windows.Media.Effects;
-using System.Threading;
-using System.Collections.ObjectModel;
 using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Media.Effects;
+using VisualChatBot.Models;
+using VisualChatBot.Tools;
 
 namespace VisualChatBot.ViewModels
 {
@@ -57,7 +47,7 @@ namespace VisualChatBot.ViewModels
         /// <summary>
         /// 发送次数
         /// </summary>
-        int sendTimes = 0 ;
+        int sendTimes = 0;
         private List<HistoryMessage> historyMessages = new List<HistoryMessage>();
         Tools.WebRequest request;
         public VisualChatViewModel()
@@ -78,6 +68,7 @@ namespace VisualChatBot.ViewModels
                 {
                     string configJson = File.ReadAllText(configPath);
                     UserConfig = JsonConvert.DeserializeObject<UserConfig>(configJson);
+                    AddSystemOrder();
                 }
                 #endregion
                 #region 历史对话
@@ -97,7 +88,7 @@ namespace VisualChatBot.ViewModels
                 }
                 #endregion
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -168,8 +159,8 @@ namespace VisualChatBot.ViewModels
         [RelayCommand]
         async void Send(StackPanel o)
         {
-            if(isSending) return;
-            if (!string.IsNullOrEmpty(UserConfig.Apikey)&&!string.IsNullOrEmpty(MyInput))
+            if (isSending) return;
+            if (!string.IsNullOrEmpty(UserConfig.Apikey) && !string.IsNullOrEmpty(MyInput))
             {
                 #region 控件生成流
                 BrushConverter converter = new BrushConverter();
@@ -198,7 +189,7 @@ namespace VisualChatBot.ViewModels
                     MaxWidth = o.ActualWidth,
                     TextWrapping = TextWrapping.Wrap,
                     Foreground = Brushes.Black,
-                    Margin = new Thickness(5,10,5,10),
+                    Margin = new Thickness(5, 10, 5, 10),
                     IsReadOnly = true,
                     Text = MyInput.ToString(),
                 };
@@ -234,7 +225,7 @@ namespace VisualChatBot.ViewModels
                 }
                 respondTemp = getApiRespond.Result;
                 //将生成的回复加入到下一次入参(只有Http请求成功的才加入)
-                if(HttpGetModel.IsRequestSuccess == true)
+                if (HttpGetModel.IsRequestSuccess == true)
                 {
                     messageList.Add(new Message
                     {
@@ -302,7 +293,7 @@ namespace VisualChatBot.ViewModels
         /// </summary>
         async Task SummarizeTitle(StackPanel o)
         {
-            if (!historyMessages.Any(t=>t.Title==Title))
+            if (!historyMessages.Any(t => t.Title == Title))
             {
                 if (sendTimes == 3)
                 {
@@ -326,7 +317,7 @@ namespace VisualChatBot.ViewModels
             }
             if (o.Children.Count < 6 && o.Children.Count > 0 && isHistoryChat == false)
             {
-                Title = $"#{messageList[messageList.Count-2].content}【{System.DateTime.Now}】#";
+                Title = $"#{messageList[messageList.Count - 2].content}【{System.DateTime.Now}】#";
             }
         }
 
@@ -340,7 +331,7 @@ namespace VisualChatBot.ViewModels
             LoadSignText = string.Empty;
             while (!cancellationToken.IsCancellationRequested)
             {
-                if(LoadSignText.Length==0)
+                if (LoadSignText.Length == 0)
                 {
                     for (int i = 0; i < 20; i++)
                     {
@@ -349,7 +340,7 @@ namespace VisualChatBot.ViewModels
                         await Task.Delay(80);
                     }
                 }
-                if(LoadSignText.Length==20 && !cancellationToken.IsCancellationRequested)
+                if (LoadSignText.Length == 20 && !cancellationToken.IsCancellationRequested)
                 {
                     for (int i = 0; i < 20; i++)
                     {
@@ -394,12 +385,17 @@ namespace VisualChatBot.ViewModels
             string configStr = JsonConvert.SerializeObject(userConfig, Formatting.Indented);
             File.WriteAllText(configPath, configStr);
         }
-
+        /// <summary>
+        /// 存档并清除当前对话
+        /// </summary>
+        /// <param name="o"></param>
         [RelayCommand]
         void ClearAll(StackPanel o)
         {
-            if(o.Children.Count == 0)
+            if (o.Children.Count == 0)
             {
+                isHistoryChat = false;
+                AddSystemOrder();
                 return;
             }
             if (!historyMessages.Any(t => t.Title == Title))
@@ -419,7 +415,7 @@ namespace VisualChatBot.ViewModels
                 MenuHistorySources.Add(Title);
                 messageList.Clear();
             }
-            else if(historyMessages.Any(t => t.Title == Title)&&o.Children.Count>0)
+            else if (historyMessages.Any(t => t.Title == Title) && o.Children.Count > 0)
             {
                 var item = historyMessages.First(t => t.Title == Title);
                 string currentChatElement = o.ToXAMLString();
@@ -430,6 +426,7 @@ namespace VisualChatBot.ViewModels
                 o.Children.Clear();
                 messageList.Clear();
             }
+            AddSystemOrder();
             isHistoryChat = false;
         }
         /// <summary>
@@ -439,20 +436,20 @@ namespace VisualChatBot.ViewModels
         [RelayCommand]
         void ReviewHistoryChat(object[] o)
         {
-            string title = o[0].ToString(); 
+            string title = o[0].ToString();
             StackPanel stackPanel = (StackPanel)o[1];
-             if (title != null&&stackPanel !=null)
+            if (title != null && stackPanel != null)
             {
                 var item = historyMessages.First(t => t.Title == title);
                 var controlStructStr = item.ControlStruct;
                 StackPanel replacePanel = (StackPanel)XamlReader.Parse(controlStructStr);
-                stackPanel.Children.Clear();    
+                stackPanel.Children.Clear();
                 List<UIElement> replacePanelTemp = new List<UIElement>();
-                foreach(UIElement childTemp in replacePanel.Children)
+                foreach (UIElement childTemp in replacePanel.Children)
                 {
                     replacePanelTemp.Add(childTemp);
                 }
-                foreach(UIElement child in replacePanelTemp)
+                foreach (UIElement child in replacePanelTemp)
                 {
                     replacePanel.Children.Remove(child);
                     stackPanel.Children.Add(child);
@@ -463,7 +460,10 @@ namespace VisualChatBot.ViewModels
                 RecoveryThemeOnChatBox(stackPanel);
             }
         }
-
+        /// <summary>
+        /// 移除一项历史记录
+        /// </summary>
+        /// <param name="o"></param>
         [RelayCommand]
         void DeleteHistoryChat(object[] o)
         {
@@ -476,17 +476,39 @@ namespace VisualChatBot.ViewModels
                     MenuHistorySources.Remove(o[0].ToString());
                     string historyToStr = JsonConvert.SerializeObject(historyMessages, Formatting.Indented);
                     File.WriteAllText(historyChatPath, historyToStr);
-                    if (messageList.Count > 0 && historyMessages.Count > 0)
+                    if (messageList.Count > 0 && historyMessages.Count > 0 && Title == o[0].ToString())
                     {
                         var stackpanel = (StackPanel)o[1];
                         stackpanel.Children.Clear();
+                        isHistoryChat = false;
                     }
                     else if (historyMessages.Count == 0)
                     {
                         var stackpanel = (StackPanel)o[1];
                         stackpanel.Children.Clear();
                         IsHistoryPopupAvaliable = false;
+                        isHistoryChat = false;
                     }
+                }
+            }
+        }
+        /// <summary>
+        /// 添加系统命令
+        /// </summary>
+        void AddSystemOrder()
+        {
+            if (!string.IsNullOrEmpty(userConfig.SystemOrder))
+            {
+                messageList.Clear();
+                string[] systemOrder = userConfig.SystemOrder.Split('；');
+                foreach (var item in systemOrder)
+                {
+                    Message message = new Message()
+                    {
+                        role = "system",
+                        content = item
+                    };
+                    messageList.Add(message);
                 }
             }
         }
@@ -508,7 +530,7 @@ namespace VisualChatBot.ViewModels
                     }
                 }
             }
-            else if(UserConfig.EnableDarkMode == true)
+            else if (UserConfig.EnableDarkMode == true)
             {
                 foreach (Border border in o.Children.OfType<Border>())
                 {

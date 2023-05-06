@@ -99,7 +99,7 @@
                 Margin="5,1,5,1"
                 Text="{Binding Text, RelativeSource={RelativeSource AncestorType=TextBox,Mode=FindAncestor}}"
                 Background="{Binding ElementName=borderBack, Path=Background}"
-                FontSize="14"
+                FontSize="12"
                 Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=TextBox,Mode=FindAncestor}}"
                 BorderThickness="0"
                 Padding="5"/>

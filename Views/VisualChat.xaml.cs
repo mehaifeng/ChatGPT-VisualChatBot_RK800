@@ -1,25 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using VisualChatBot.Models;
-using VisualChatBot.ViewModels;
-using System.IO;
-using VisualChatBot.Tools;
-using Newtonsoft.Json;
 using System.Windows.Media.Animation;
-using Newtonsoft.Json.Linq;
+using VisualChatBot.ViewModels;
 
 namespace VisualChatBot
 {
@@ -37,7 +27,7 @@ namespace VisualChatBot
             this.DataContext = _visualChatViewModel;
             if (_visualChatViewModel.UserConfig.EnableDarkMode)
             {
-                ModeSwitch_Click(null,null);
+                ModeSwitch_Click(null, null);
             }
             OptionalModelsComboBox.ItemsSource = new[]
             {
@@ -179,7 +169,7 @@ namespace VisualChatBot
                 _visualChatViewModel.UserConfig.EnableDarkMode = false;
             }
             //如果当前是黑暗模式
-            else if(ModeSwitch.Foreground == Brushes.Black)
+            else if (ModeSwitch.Foreground == Brushes.Black)
             {
                 ModeSwitch.Foreground = Brushes.White;
                 //AppTitle
@@ -229,13 +219,13 @@ namespace VisualChatBot
         /// <param name="e"></param>
         private void OpenSettingBtn_Checked(object sender, RoutedEventArgs e)
         {
-            DoubleAnimation animation = new DoubleAnimation(0,90,TimeSpan.FromSeconds(0.2));
+            DoubleAnimation animation = new DoubleAnimation(0, 90, TimeSpan.FromSeconds(0.2));
             DoubleAnimation animation2 = new DoubleAnimation(90, 0, TimeSpan.FromSeconds(0.2));
             if (OpenSettingBtn.IsChecked == true)
             {
                 ConfigBorder.BeginAnimation(HeightProperty, animation);
             }
-            else if(OpenSettingBtn.IsChecked == false)
+            else if (OpenSettingBtn.IsChecked == false)
             {
                 ConfigBorder.BeginAnimation(HeightProperty, animation2);
             }

@@ -1,13 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VisualChatBot.ViewModels
 {
-    public partial class ReceivedViewModel:ObservableObject
+    public partial class ReceivedViewModel : ObservableObject
     {
         private string _content;
         public string Content
@@ -18,7 +13,7 @@ namespace VisualChatBot.ViewModels
             }
             set
             {
-                if(_content != value)
+                if (_content != value)
                 {
                     _content = value;
                     OnPropertyChanged(nameof(Content));
