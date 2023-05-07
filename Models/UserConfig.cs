@@ -11,10 +11,14 @@ namespace VisualChatBot.Models
         string? model;
         [ObservableProperty, JsonProperty("maxTokens")]
         string? maxTokens;
-        [ObservableProperty, JsonProperty("objectDegree")]
-        string? objectDegree;
         [ObservableProperty, JsonProperty("systemOrder")]
         string? systemOrder;
+        [ObservableProperty, JsonProperty("presence_penalty")]//新话题分支 -2-2
+        double presence_penalty = 1;
+        [ObservableProperty, JsonProperty("frequency_penalty")]//降低重复行 -2-2
+        double frequency_penalty = 1;
+        [ObservableProperty, JsonProperty("temperature")]//创新分散和准确集中 0-2
+        string temperature = "1";
         [ObservableProperty]
         bool enableDarkMode;
     }

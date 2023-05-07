@@ -31,7 +31,7 @@ namespace VisualChatBot.Tools
                     {
                         HttpGetModel.IsValidApiKey = true;
                     }
-                    string errorInfo = $"\n#错误类型：{responType.error.type}\n#错误内容：{responType.error.message}";
+                    string errorInfo = $"#错误类型：{responType.error.type}\n#错误内容：{responType.error.message}";
                     return errorInfo;
                 }
                 else
@@ -44,7 +44,8 @@ namespace VisualChatBot.Tools
             }
             catch (Exception ex)
             {
-                return $"\n#未经处理的异常：\n{ex}";
+                HttpGetModel.IsRequestSuccess = false;
+                return $"#未经处理的异常：\n{ex.ToString().Substring(0,280)}";
             }
         }
     }

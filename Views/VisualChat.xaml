@@ -8,13 +8,16 @@
         xmlns:converters="clr-namespace:VisualChatBot.Converters"
         xmlns:behavior="clr-namespace:VisualChatBot.Behavior"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=viewmodel:VisualChatViewModel}"
-        ResizeMode="CanMinimize"
         WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
         Background="Transparent"
+        d:DataContext="{d:DesignInstance Type=viewmodel:VisualChatViewModel}"
         WindowStartupLocation="CenterScreen"
-        Height="800" Width="650">
+        MinHeight="800"
+        MinWidth="650"
+        Height="800"
+        Width="650">
     <Window.Resources>
         <ResourceDictionary Source="../Assets/Styles/DefaultStyles.xaml">
             <ResourceDictionary.MergedDictionaries>
@@ -24,24 +27,18 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
-    
-    <Border Margin="7">
-        <Border.Effect>
-            <DropShadowEffect Color="Black" BlurRadius="10" Opacity="0.7" Direction="320" ShadowDepth="5"/>
-        </Border.Effect>
+    <Border>
         <Grid
             Grid.Row="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
-                <RowDefinition/>
-                <RowDefinition Height="110"/>
+                <RowDefinition MinHeight="400"/>
+                <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
-            <Border
+            <Border Grid.Row="0"
                 Name="AppTitle"
                 MouseLeftButtonDown="MoveWindow_MouseLeftButtonDown"
-                Grid.Row="0"
-                CornerRadius="5,5,0,0"
+                CornerRadius="10,10,0,0"
                 Background="White">
                 <StackPanel
                     HorizontalAlignment="Right"
@@ -51,6 +48,7 @@
                         Click="ModeSwitch_Click"
                         Content="&#xe687;"
                         Foreground="Black"
+                        Width="30"
                         FontSize="20"
                         Margin="0,0,10,0"
                         Template="{StaticResource WindowControlButtomTemplate}"/>
@@ -58,6 +56,7 @@
                         Name="miniBtn"
                         Click="MiniOrReSize_Click"
                         Content="&#xea7f;"
+                        Width="30"
                         FontSize="20"
                         Margin="0,0,5,0"
                         Template="{StaticResource WindowControlButtomTemplate}"/>
@@ -70,13 +69,19 @@
                         Template="{StaticResource WindowControlButtomTemplate}"/>
                 </StackPanel>
             </Border>
-            <StackPanel
+            <Grid Grid.Row="1"
                 Name="AppBody"
                 MouseLeftButtonDown="StackPanel_MouseLeftButtonDown"
-                Background="White"
-                Grid.Row="1"
-                Orientation="Vertical">
-                <Grid>
+                Background="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition MinHeight="400"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="120"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
                     <ToggleButton
                         Name="MenuToggleBtn"
                         Cursor="Hand"
@@ -228,6 +233,7 @@
                                                                             <Setter.Value>
                                                                                 <ControlTemplate>
                                                                                     <TextBlock 
+                                                                                        Foreground="{Binding ElementName=MenuHistory, Path=Foreground}"
                                                                                         Cursor="Hand"
                                                                                         ToolTip="删除"
                                                                                         Text="{Binding Content, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}"/>
@@ -255,7 +261,6 @@
                                     Name="MenuAbout"
                                     Content="关于"  
                                     FontSize="12"
-                                    Command="{Binding ClickAboutCommand}"
                                     Template="{StaticResource MenuBtnTemplate}"
                                     />
                             </StackPanel>
@@ -284,13 +289,13 @@
                         </ToggleButton.Style>
                     </ToggleButton>
                 </Grid>
-                <Border
-                    x:Name="ConfigBorder"
-                    CornerRadius="7"
-                    Background="LightGray"
-                    Margin="5,0,5,5"
-                    Height="0"
-                    Width="620">
+                <Border Grid.Row="1"
+                        x:Name="ConfigBorder"
+                        CornerRadius="7"
+                        Background="LightGray"
+                        Width="620"
+                        Margin="5,0,5,5"
+                        Height="0">
                     <Grid
                         x:Name="ConfigGrid">
                         <StackPanel
@@ -317,15 +322,16 @@
                                 Foreground="Gray"
                                 VerticalAlignment="Center"
                                 Margin="5,0,5,0"/>
-                            <ComboBox
-                                x:Name="ObjectDegreeCombobox"
+                            <TextBox
+                                x:Name="ObjectDegreeTextbox"
                                 BorderThickness="0"
-                                SelectedValue="{Binding UserConfig.ObjectDegree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextChanged="ObjectDegreeTextbox_TextChanged"
+                                Text="{Binding UserConfig.Temperature, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 VerticalAlignment="Center"
                                 Margin="0,0,0,0"
                                 Height="28"
                                 Width="45"
-                                Template="{StaticResource ComboBoxStyle}"/>
+                                Template="{StaticResource TextBoxStyle}"/>
                             <TextBlock 
                                 Name="system_label"
                                 Text="系统消息"
@@ -416,18 +422,19 @@
                         
                     </Grid>
                 </Border>
-                <TextBlock
+                <TextBlock Grid.Row="2"
                     Name="title_label"
                     IsHitTestVisible="False"
                     Text="RK800"
                     Foreground="LightGray"
                     HorizontalAlignment="Center"
                     FontSize="28"/>
-                <Border 
-                    Background="{Binding ElementName=OutputBox,Path=Background}"
-                    BorderThickness="1"
-                    CornerRadius="7"
-                    Margin="5,15,5,0">
+                <Border Grid.Row="3"
+                        MinHeight="400"
+                        Background="{Binding ElementName=OutputBox,Path=Background}"
+                        BorderThickness="1"
+                        CornerRadius="7"
+                        Margin="5,15,5,0">
                     <!--#region 对话区-->
                     <Border
                         x:Name="ChatAreaFram"
@@ -435,9 +442,8 @@
                         CornerRadius="7">
                         <ScrollViewer
                             behavior:ScrollViewerBehavior.AutoScrollToEnd="{Binding IsScrollToButtom, Mode=TwoWay}"
-                            Margin="5,5,5,5"
+                            Margin="5"
                             VerticalScrollBarVisibility="Auto"
-                            Height="400"
                             Background="{Binding ElementName=InputBox,Path=Background}">
                             <StackPanel
                                  x:Name="ChatArea"
@@ -447,31 +453,40 @@
                     </Border>
                     <!--#endregion-->
                 </Border>
-                <TextBlock 
-                    Name="loadingSignal"
-                    Text="{Binding LoadSignText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                    Foreground="#36454f"
-                    HorizontalAlignment="Center"
-                    Margin="0,2,0,5"/>
-                <Border 
-                    Background="{Binding ElementName=InputBox,Path=Background}"
-                    BorderThickness="1"
-                    CornerRadius="7"
-                    Margin="5,0,5,0">
+                <Grid Grid.Row="4"
+                      Height="20">
+                    <TextBlock 
+                        Name="loadingSignal"
+                        Text="{Binding LoadSignText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        Foreground="#36454f"
+                        HorizontalAlignment="Center"
+                        Margin="0,2,0,5"/>
+                    <Button 
+                        Margin="0,0,10,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Content="&#xe60a;"
+                        Foreground="Gray"
+                        FontSize="20"
+                        Template="{StaticResource WindowControlButtomTemplate}"/>
+                </Grid>
+                <Border Grid.Row="5"
+                        Background="{Binding ElementName=InputBox,Path=Background}"
+                        BorderThickness="1"
+                        CornerRadius="7"
+                        Margin="5,0,5,0">
                     <TextBox
                         Name="InputBox"
                         Background="#F5F5F5"
-                        TextWrapping="WrapWithOverflow"
+                        TextWrapping="Wrap"
                         AcceptsReturn="True"
                         BorderThickness="0"
                         Margin="2,2,2,2"
-                        Height="120"
                         Text="{Binding MyInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         GotFocus="Input_GotFocus"/>
                 </Border>
-            </StackPanel>
-            <Grid
-            Grid.Row="2"
+            </Grid>
+            <Grid Grid.Row="2"
                 Background="{x:Null}">
                 <Border
                     Name="AppButtom"
@@ -486,7 +501,10 @@
                             Margin="5,0,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Content="&#xe686;"
+                            Content="&#xe608;"
+                            FontSize="15"
+                            Foreground="Black"
+                            ToolTip="保存并开始新话题"
                             Command="{Binding ClearAllCommand}"
                             CommandParameter="{Binding ElementName=ChatArea}"
                             Template="{StaticResource ButtonTemplate}">
@@ -499,6 +517,8 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Content="&#xe912;"
+                            FontSize="15"
+                            Foreground="Black"
                             Command="{Binding SendCommand}"
                             Template="{StaticResource ButtonTemplate}"
                             CommandParameter="{Binding ElementName=ChatArea}">

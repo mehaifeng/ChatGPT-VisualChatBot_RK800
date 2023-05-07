@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,21 +32,12 @@ namespace VisualChatBot
             }
             OptionalModelsComboBox.ItemsSource = new[]
             {
+                //"gpt-4",
+                //"gpt-4-0314",
+                //"gpt-4-32k",
+                //"gpt-4-32k-0314",
                 "gpt-3.5-turbo",
                 "gpt-3.5-turbo-0301",
-            };
-            ObjectDegreeCombobox.ItemsSource = new[]
-            {
-                "0",
-                "0.1",
-                "0.2",
-                "0.3",
-                "0.4",
-                "0.5",
-                "0.6",
-                "0.7",
-                "0.8",
-                "0.9"
             };
             ModeSwitch.Content = "\xe687";
         }
@@ -105,7 +97,7 @@ namespace VisualChatBot
                 Dictionary<string, string> UserConfig = new()
                 {
                     { "model", _visualChatViewModel.UserConfig?.Model },
-                    { "objectDegree",  _visualChatViewModel.UserConfig.ObjectDegree?.ToString() },
+                    { "temperature",  _visualChatViewModel.UserConfig.Temperature.ToString() },
                     { "maxTokens",  _visualChatViewModel.UserConfig.MaxTokens?.ToString() },
                     { "APIKey",  _visualChatViewModel.UserConfig?.Apikey },
                     { "EnableDarkMode", _visualChatViewModel.UserConfig.EnableDarkMode.ToString() }
@@ -144,7 +136,7 @@ namespace VisualChatBot
                 MenuAbout.Foreground = Application.Current.Resources["ForegroundColor"] as SolidColorBrush;
                 ConfigBorder.Background = Brushes.LightGray;
                 OptionalModelsComboBox.Background = Brushes.White;
-                ObjectDegreeCombobox.Background = Brushes.White;
+                ObjectDegreeTextbox.Background = Brushes.White;
                 systemMessageTextbox.Background = Brushes.White;
                 MaxTokensTextbox.Background = Brushes.White;
                 ApiKeyTextbox.Background = Brushes.White;
@@ -163,7 +155,7 @@ namespace VisualChatBot
                     if (border.Tag.ToString() == "respondbox")
                     {
                         border.Background = Brushes.White;
-                        (border.Child as TextBox).Foreground = Brushes.Black;
+                        (((border.Child) as Grid).Children[0] as TextBox).Foreground = Brushes.Black;
                     }
                 }
                 _visualChatViewModel.UserConfig.EnableDarkMode = false;
@@ -184,7 +176,7 @@ namespace VisualChatBot
                 MenuAbout.Foreground = Application.Current.Resources["DarkForegroundColor"] as SolidColorBrush;
                 ConfigBorder.Background = (Brush)converter.ConvertFromString("#36454f");
                 OptionalModelsComboBox.Background = (Brush)converter.ConvertFromString("#e3dac9");
-                ObjectDegreeCombobox.Background = (Brush)converter.ConvertFromString("#e3dac9");
+                ObjectDegreeTextbox.Background = (Brush)converter.ConvertFromString("#e3dac9");
                 systemMessageTextbox.Background = (Brush)converter.ConvertFromString("#e3dac9");
                 MaxTokensTextbox.Background = (Brush)converter.ConvertFromString("#e3dac9");
                 ApiKeyTextbox.Background = (Brush)converter.ConvertFromString("#e3dac9");
@@ -203,7 +195,7 @@ namespace VisualChatBot
                     if (border.Tag.ToString() == "respondbox")
                     {
                         border.Background = (Brush)converter.ConvertFromString("#2a52be");
-                        (border.Child as TextBox).Foreground = Brushes.White;
+                        (((border.Child) as Grid).Children[0]  as TextBox).Foreground = Brushes.White;
                     }
                 }
                 _visualChatViewModel.UserConfig.EnableDarkMode = true;
@@ -228,6 +220,15 @@ namespace VisualChatBot
             else if (OpenSettingBtn.IsChecked == false)
             {
                 ConfigBorder.BeginAnimation(HeightProperty, animation2);
+            }
+        }
+
+        private void ObjectDegreeTextbox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Regex regex = new Regex(@"^[-2,2]$"); // 限制只能输入-2到2的数字
+            if (!regex.IsMatch(ObjectDegreeTextbox.Text)) // 如果输入的内容不是数字或者超出范围，则提示用户重新输入
+            {
+                ObjectDegreeTextbox.Focus(); // 让光标回到输入框中
             }
         }
     }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -14,9 +15,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
+using System.Windows.Navigation;
 using VisualChatBot.Models;
 using VisualChatBot.Tools;
 
@@ -185,15 +188,41 @@ namespace VisualChatBot.ViewModels
                 {
                     Style = (Style)Application.Current.FindResource("NoBorderTextBox"),
                     BorderBrush = Brushes.Transparent,
-                    Background = Brushes.Transparent,
                     MaxWidth = o.ActualWidth,
                     TextWrapping = TextWrapping.Wrap,
                     Foreground = Brushes.Black,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(5, 10, 5, 10),
                     IsReadOnly = true,
                     Text = MyInput.ToString(),
                 };
-                sendbox.Child = sendMessage;
+                Grid sendGrid = new Grid();
+                sendbox.MaxHeight = o.ActualWidth;
+                sendGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+                sendGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(20, GridUnitType.Pixel) });
+                Grid.SetColumn(sendMessage, 0);
+                sendGrid.Children.Add(sendMessage);
+                Button deleteSend = new Button()
+                {
+                    Content = "×",
+                    Foreground = Brushes.Black,
+                    Background = Brushes.Transparent,
+                    BorderBrush = Brushes.Transparent,
+                    Style = (Style)Application.Current.FindResource("NoFocusButton"),
+                    VerticalContentAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 10, 5, 10),
+                    Width = 15,
+                    Height = 15,
+                };
+                Grid.SetColumn(deleteSend, 1);
+                //Grid里面有文本内容和删除按钮
+                sendGrid.Children.Add(deleteSend);
+                //次级Grid
+                sendbox.Child = sendGrid;
+                //最大一级StackPanel
                 o.Children.Add(sendbox);
                 IsScrollToButtom = true;
                 IsScrollToButtom = false;
@@ -206,8 +235,17 @@ namespace VisualChatBot.ViewModels
                         content = MyInput
                     }
                 );
+                deleteSend.Click += (s, e) =>
+                {
+                    o.Children.Remove(sendbox);
+                    messageList.Remove(messageList.Where(t=>t.content==(((((s as Button).Parent)as Grid).Children[0]) as TextBox).Text).First());
+                };
                 var input = new
                 {
+                    presence_penalty = UserConfig.Presence_penalty,
+                    frequency_penalty = UserConfig.Frequency_penalty,
+                    temperature = Convert.ToDouble(UserConfig.Temperature),
+                    max_tokens =Convert.ToInt32(UserConfig.MaxTokens),
                     model = UserConfig.Model,
                     messages = messageList
                 };
@@ -272,11 +310,51 @@ namespace VisualChatBot.ViewModels
                     IsReadOnly = true,
                     Foreground = UserConfig.EnableDarkMode ? Brushes.White : Brushes.Black
                 };
+                Grid respondGrid = new Grid();
+                respondGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(20, GridUnitType.Pixel) });
+                respondGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+                Button deleteRespond = new Button()
+                {
+                    Content = "×",
+                    Foreground = Brushes.Black,
+                    Background = Brushes.Transparent,
+                    BorderBrush = Brushes.Transparent,
+                    Style = (Style)Application.Current.FindResource("NoFocusButton"),
+                    VerticalContentAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(5, 10, 0, 10),
+                    Width = 15,
+                    Height = 15,
+                };
+                Grid.SetColumn(deleteRespond, 0);
+                Grid.SetColumn(respondbox, 1);
+                respondGrid.Children.Add(respondbox);
+                respondGrid.Children.Add(deleteRespond);
+                border.Child = respondGrid;
                 respondbox.SetBinding(TextBox.TextProperty, binding);
-                border.Child = respondbox;
                 o.Children.Add(border);
                 //逐字显示
-                ShowGenerateText(receivedViewModel);
+                if(HttpGetModel.IsRequestSuccess == true)
+                {
+                    ShowGenerateText(receivedViewModel);
+                }
+                else
+                {
+                    receivedViewModel.Content = respondTemp;
+                    if (respondTemp.Contains("#未经处理的异常"))
+                    {
+                        receivedViewModel.Content = "服务器连接失败，请检查网络连接或稍后再试";
+                    }
+                }
+                deleteRespond.Click += (s, e) =>
+                {
+                    o.Children.Remove(border);
+                    if(HttpGetModel.IsRequestSuccess == true)
+                    {
+                        messageList.Remove(messageList.Where(t => t.content == (((((s as Button).Parent) as Grid).Children[0]) as TextBox).Text).First());
+                    }
+                };
                 //总结主要话题
                 SummarizeTitle(o);
                 isSending = false;
@@ -286,6 +364,21 @@ namespace VisualChatBot.ViewModels
             {
 
             }
+        }
+
+        private void DeleteRespond_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DeleteSend_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start("explorer.exe", "https://chat.openai.com/");
         }
 
         /// <summary>
@@ -382,6 +475,10 @@ namespace VisualChatBot.ViewModels
         [RelayCommand]
         void SaveConfig()
         {
+            if(messageList.Count == 0)
+            {
+                AddSystemOrder();
+            }
             string configStr = JsonConvert.SerializeObject(userConfig, Formatting.Indented);
             File.WriteAllText(configPath, configStr);
         }
@@ -526,7 +623,7 @@ namespace VisualChatBot.ViewModels
                     if (border.Tag.ToString() == "respondbox")
                     {
                         border.Background = Brushes.White;
-                        (border.Child as TextBox).Foreground = Brushes.Black;
+                        //(((border.Child) as Grid).Children[0] as TextBox).Foreground = Brushes.Black;
                     }
                 }
             }
@@ -537,7 +634,7 @@ namespace VisualChatBot.ViewModels
                     if (border.Tag.ToString() == "respondbox")
                     {
                         border.Background = (Brush)converter.ConvertFromString("#2a52be");
-                        (border.Child as TextBox).Foreground = Brushes.White;
+                        //(((border.Child) as Grid).Children[0] as TextBox).Foreground = Brushes.White;
                     }
                 }
             }

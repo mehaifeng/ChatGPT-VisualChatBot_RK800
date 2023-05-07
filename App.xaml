@@ -47,6 +47,18 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <!--无光标框Button-->
+            <Style TargetType="Button" x:Key="NoFocusButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <TextBlock
+                                Cursor="Hand"
+                                Text="{Binding Content,  RelativeSource={RelativeSource AncestorType=Button,Mode=FindAncestor}}"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
