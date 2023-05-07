@@ -345,6 +345,7 @@ namespace VisualChatBot.ViewModels
                     if (respondTemp.Contains("#未经处理的异常"))
                     {
                         receivedViewModel.Content = "服务器连接失败，请检查网络连接或稍后再试";
+                        HttpGetModel.IsRequestSuccess = false;
                     }
                 }
                 deleteRespond.Click += (s, e) =>

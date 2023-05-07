@@ -431,7 +431,7 @@
                     FontSize="28"/>
                 <Border Grid.Row="3"
                         MinHeight="400"
-                        Background="{Binding ElementName=OutputBox,Path=Background}"
+                        Background="{Binding ElementName=InputBox,Path=Background}"
                         BorderThickness="1"
                         CornerRadius="7"
                         Margin="5,15,5,0">
