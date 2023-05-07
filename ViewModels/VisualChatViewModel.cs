@@ -623,7 +623,7 @@ namespace VisualChatBot.ViewModels
                     if (border.Tag.ToString() == "respondbox")
                     {
                         border.Background = Brushes.White;
-                        //(((border.Child) as Grid).Children[0] as TextBox).Foreground = Brushes.Black;
+                        (((border.Child) as Grid).Children[0] as TextBox).Foreground = Brushes.Black;
                     }
                 }
             }
@@ -634,7 +634,7 @@ namespace VisualChatBot.ViewModels
                     if (border.Tag.ToString() == "respondbox")
                     {
                         border.Background = (Brush)converter.ConvertFromString("#2a52be");
-                        //(((border.Child) as Grid).Children[0] as TextBox).Foreground = Brushes.White;
+                        (((border.Child) as Grid).Children[0] as TextBox).Foreground = Brushes.White;
                     }
                 }
             }
